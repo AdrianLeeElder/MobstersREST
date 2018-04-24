@@ -12,6 +12,6 @@ public class Mobster {
 
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
     private String username;
 }
