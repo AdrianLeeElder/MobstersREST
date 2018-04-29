@@ -1,17 +1,21 @@
 package com.adrian.mobstersrest.mobsters.domain;
 
-import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Mobster {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String username;
+  @Id
+  private String id;
+  private String username;
+  private boolean pending;
 }

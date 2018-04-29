@@ -1,67 +1,76 @@
 package com.adrian.mobstersrest.mobsters.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.adrian.mobstersrest.mobsters.api.v1.controller.MobsterController;
-import com.adrian.mobstersrest.mobsters.model.MobsterDto;
+import com.adrian.mobstersrest.mobsters.domain.Mobster;
+import com.adrian.mobstersrest.mobsters.repositories.ReactiveMobsterRepository;
 import com.adrian.mobstersrest.mobsters.services.MobsterService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.reactivestreams.Publisher;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@RunWith(SpringRunner.class)
 public class MobsterControllerTest {
 
-    @Mock
-    private MobsterService mobsterService;
+  @Mock
+  private MobsterService mobsterService;
+  @Mock
+  private ReactiveMobsterRepository reactiveMobsterRepository;
 
-    @InjectMocks
-    private MobsterController mobsterController;
+  private WebTestClient webTestClient;
 
-    private MockMvc mockMvc;
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+    webTestClient = WebTestClient.bindToController(new MobsterController(mobsterService))
+        .build();
+  }
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(mobsterController).build();
-    }
+  @Test
+  public void getAllMobsters() {
+    BDDMockito.given(reactiveMobsterRepository.findAll())
+        .willReturn(Flux.just(Mobster.builder().username("adrian").build()));
 
-    @Test
-    public void getAllMobsters() throws Exception {
-        MobsterDto mobster = new MobsterDto();
-        mobster.setUsername("johnny");
+    Mobster mobster = new Mobster();
+    mobster.setUsername("johnny");
 
-        when(mobsterService.getMobsters()).thenReturn(Collections.singletonList(mobster));
+    Mobster mobster2 = new Mobster();
+    mobster.setUsername("Adrian");
 
-        mockMvc.perform(
-                get("/api/v1/mobsters")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[:1]",
-                        hasSize(1))
-                );
-    }
+    when(mobsterService.getMobsters()).thenReturn(Flux.fromArray(new Mobster[]{mobster, mobster2}));
 
-    @Test
-    public void createNewMobster() throws Exception {
-        mockMvc
-                .perform(post("/api/v1/mobsters/zombie")
-                        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect();
+    webTestClient.get().uri("/api/v1/mobsters")
+        .exchange()
+        .expectStatus().isOk()
+        .expectBodyList(Mobster.class)
+        .hasSize(2);
+  }
 
-    }
+  @Test
+  public void createNewMobster() {
+    BDDMockito.given(reactiveMobsterRepository.saveAll(any(Publisher.class)))
+        .willReturn(Flux.just(Mobster.builder().username("adrian").build()));
+
+    BDDMockito.given(mobsterService.createMobsters(any(Publisher.class)))
+        .willReturn(Flux.just(Mobster.builder().username("adrian").build()));
+
+    Mobster mobster = new Mobster();
+    mobster.setUsername("john");
+    mobster.setId("1");
+
+    Mono<Mobster> mobsterMono = Mono.just(Mobster.builder().username("zombie").build());
+
+    webTestClient
+        .post()
+        .uri("/api/v1/mobsters")
+        .body(mobsterMono, Mobster.class).exchange()
+        .expectStatus().isCreated();
+  }
 }
