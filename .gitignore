@@ -27,3 +27,6 @@
 backend/target/
 frontend/target/
 backend/src/main/resources/public/
+frontend/node/
+backend/src/main/resources/static/
+backend/src/main/resources/templates/static
