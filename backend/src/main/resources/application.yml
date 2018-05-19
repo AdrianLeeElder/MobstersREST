@@ -1,0 +1,31 @@
+spring.application.name: mobster
+
+---
+
+spring:
+  profiles: prod
+spring.application.name: mobster
+spring:
+  profiles: prod
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+
+spring.cloud.vault:
+    host: localhost
+    port: 8200
+    scheme: http
+    authentication: TOKEN
+    token: 4b22281d-b7aa-e713-d5bf-9af17c543d2f
+
+---
+
+spring:
+  profiles: dev
+spring.data.mongodb.host: localhost
+spring.data.mongodb.port: 27017
+spring.application.name: mobster
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:password@localhost:27017/mobsters

@@ -1,6 +1,24 @@
-spring.data.mongodb.host: localhost
-spring.data.mongodb.port: 27017
 spring.application.name: mobster
+
+spring:
+  profiles:
+    active: dev
+---
+
+spring:
+  profiles: prod
+
+spring.cloud.vault:
+    host: localhost
+    port: 8200
+    scheme: http
+    authentication: TOKEN
+    token: 4b22281d-b7aa-e713-d5bf-9af17c543d2f
+---
+
+spring:
+  profiles: dev
+
 spring.cloud.vault:
     host: localhost
     port: 8200

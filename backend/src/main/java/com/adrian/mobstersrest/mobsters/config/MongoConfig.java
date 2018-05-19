@@ -1,5 +1,6 @@
 package com.adrian.mobstersrest.mobsters.config;
 
+import com.mongodb.ConnectionString;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +16,13 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @RequiredArgsConstructor
 public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
-  @Value("${spring.data.mongodb.port}")
-  private String port;
-  @Value("${spring.data.mongodb.host}")
-  private String host;
+  @Value("${spring.data.mongodb.uri}")
+  private String uri;
 
   @Override
   @Bean
   public MongoClient reactiveMongoClient() {
-    return MongoClients.create();
+    return MongoClients.create(new ConnectionString(uri));
   }
 
   @Override
