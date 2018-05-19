@@ -19,7 +19,7 @@
 
     methods: {
       callRestService() {
-        AXIOS.get(`api/v1/mobsters`)
+        AXIOS.get(`mobsters`)
         .then(response => {
           // JSON responses are automatically parsed.
           this.response = response.data
