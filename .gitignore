@@ -24,4 +24,6 @@
 /nbdist/
 /.nb-gradle/
 .DS_Store
-backend/target
+backend/target/
+frontend/target/
+backend/src/main/resources/public/
