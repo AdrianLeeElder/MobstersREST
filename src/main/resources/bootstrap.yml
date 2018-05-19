@@ -1,7 +1,0 @@
-spring.application.name: mobster
-spring.cloud.vault:
-    host: localhost
-    port: 8200
-    scheme: http
-    authentication: TOKEN
-    token: 6dd25344-357d-52e1-5fbc-8b90ef695599
