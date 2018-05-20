@@ -4,9 +4,7 @@ spring.application.name: mobster
 
 spring:
   profiles: prod
-spring.application.name: mobster
 spring:
-  profiles: prod
   data:
     mongodb:
       uri: ${MONGODB_URI}
@@ -15,9 +13,6 @@ spring:
 
 spring:
   profiles: dev
-spring.data.mongodb.host: localhost
-spring.data.mongodb.port: 27017
-spring.application.name: mobster
 spring:
   data:
     mongodb:
