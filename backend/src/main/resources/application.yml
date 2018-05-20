@@ -1,19 +1,11 @@
-spring.application.name: mobster
-
----
-
 spring:
   profiles: prod
-spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
-
 ---
-
 spring:
   profiles: dev
-spring:
   data:
     mongodb:
       uri: mongodb://admin:password@localhost:27017/mobsters
