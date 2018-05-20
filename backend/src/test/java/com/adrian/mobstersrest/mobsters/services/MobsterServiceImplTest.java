@@ -7,21 +7,15 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import com.adrian.mobstersrest.mobsters.domain.Mobster;
 import com.adrian.mobstersrest.mobsters.repositories.MobsterReactiveRepository;
-import java.util.Collections;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.reactivestreams.Publisher;
-import org.springframework.vault.core.VaultTemplate;
-import org.springframework.vault.support.VaultResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

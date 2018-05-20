@@ -2,6 +2,7 @@ package com.adrian.mobstersrest.mobsters.actions;
 
 
 import com.adrian.mobstersrest.mobsters.services.HumanBotService;
+import com.adrian.mobstersrest.mobsters.services.MobsterService;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
@@ -14,8 +15,7 @@ import com.gargoylesoftware.htmlunit.util.FalsifyingWebConnection;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.vault.core.VaultOperations;
-import org.springframework.vault.support.VaultResponseSupport;
+
 
 /**
  * @author aelder
@@ -28,7 +28,7 @@ public class Login extends AbstractAction {
   @Autowired
   private HumanBotService humanBotService;
   @Autowired
-  private VaultOperations vaultOperations;
+  private MobsterService mobsterService;
 
   private final String divisionPath = "//div[@sstyle='display:none;']";
 
@@ -92,17 +92,11 @@ public class Login extends AbstractAction {
         return response;
       }
     };
-
-    setPage(loginPage(getMobsterUsername(),
-        getPassword()));
+    String username = getMobsterUsername();
+    setPage(loginPage(username,
+        mobsterService.retrieveMobsterPassword(username)));
   }
 
-  private String getPassword() {
-    VaultResponseSupport<String> vaultResponseSupport =
-        vaultOperations.read(getMobsterUsername(), String.class);
-
-    return vaultResponseSupport.getData();
-  }
 
   @Override
   public void printAction() {
