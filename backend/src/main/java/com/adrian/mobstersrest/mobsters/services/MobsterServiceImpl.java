@@ -16,14 +16,12 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class MobsterServiceImpl implements MobsterService {
 
-  private VaultTemplate vaultTemplate;
   private MobsterReactiveRepository mobsterReactiveRepository;
 
   @Override
   public String retrieveMobsterPassword(String username) {
-    VaultResponse vaultResponse = vaultTemplate.read("secret/mobsters");
-
-    return (String) vaultResponse.getData().get(username);
+    Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
+    return mobster.getPassword();
   }
 
   @Override

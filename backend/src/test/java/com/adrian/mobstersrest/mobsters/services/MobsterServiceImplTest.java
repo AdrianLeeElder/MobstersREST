@@ -14,21 +14,20 @@ import com.adrian.mobstersrest.mobsters.repositories.MobsterReactiveRepository;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.reactivestreams.Publisher;
 import org.springframework.vault.core.VaultTemplate;
 import org.springframework.vault.support.VaultResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MobsterServiceImplTest {
 
-  @Mock
-  private VaultTemplate vaultTemplate;
-  @Mock
-  private VaultResponse vaultResponse;
   @Mock
   private MobsterReactiveRepository mobsterReactiveRepository;
   @InjectMocks
@@ -36,17 +35,12 @@ public class MobsterServiceImplTest {
 
   private String JOHN_SMITH = "John Smith";
 
-  @Before
-  public void setup() {
-    MockitoAnnotations.initMocks(this);
-  }
-
   @Test
   public void readUserPassword() {
-    when(vaultTemplate.read(anyString())).thenReturn(vaultResponse);
-    when(vaultResponse.getData()).thenReturn(Collections.singletonMap("bob", "hax"));
+    Mobster mobster = Mobster.builder().username("zombie").password("hax").build();
+    given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
 
-    assertThat(mobsterServiceImpl.retrieveMobsterPassword("bob"), equalTo("hax"));
+    assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
   }
 
   @Test

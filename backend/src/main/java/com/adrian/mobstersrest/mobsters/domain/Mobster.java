@@ -17,6 +17,8 @@ public class Mobster {
   @Id
   private String id;
   private String username;
+  private String password;
+
   private boolean pending;
   private boolean complete;
   public Mobster(Mobster mobster) {
