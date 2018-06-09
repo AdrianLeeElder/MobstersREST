@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 public class ActionFactoryServiceImpl implements ActionFactoryService {
 
   /**
-   * Create a new AbstractAction object with the passed in actionName.
+   * Create a new AbstractAction object with the passed in namename.
    *
    * @param actionName the name of the AbstractAction
    * @return a new AbstractAction instance.

@@ -8,4 +8,4 @@ spring:
   profiles: dev
   data:
     mongodb:
-      uri: mongodb://admin:password@localhost:27017/mobsters
+      uri: mongodb://dashboarduser:dbpassword@localhost:27017/mobsters

@@ -1,11 +1,17 @@
-package com.adrian.mobstersrest.mobsters.actions;
+package com.adrian.mobstersrest.mobsters.services;
 
+import com.adrian.mobstersrest.mobsters.actions.AbstractAction;
+import com.adrian.mobstersrest.mobsters.actions.BotMode;
 import com.adrian.mobstersrest.mobsters.exception.BotModeNotSupportedException;
-import com.adrian.mobstersrest.mobsters.services.MobsterService;
+import com.adrian.mobstersrest.mobsters.repositories.DailyActionReactiveRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,18 +21,19 @@ import org.springframework.stereotype.Service;
 @Service
 @Getter
 @Setter
-public class QueuedActionService {
+public class QueuedActionServiceImpl implements QueuedActionService {
 
+  @Autowired
+  private DailyActionReactiveRepository dailyActionReactiveRepository;
+  @Autowired
   private Queue<AbstractAction> dailyActions;
   private ActionExecutor actionExecutor;
   private MobsterService mobsterService;
   private BotMode botMode;
 
-  public QueuedActionService(
-      Queue<AbstractAction> dailyActions,
+  public QueuedActionServiceImpl(
       ActionExecutor actionExecutor,
       MobsterService mobsterService) {
-    this.dailyActions = dailyActions;
     this.actionExecutor = actionExecutor;
     this.mobsterService = mobsterService;
   }
@@ -47,6 +54,7 @@ public class QueuedActionService {
   /**
    * Execute the current mobster's action queue.
    */
+  @Override
   public boolean executeQueuedActions(String username) {
     while (dailyActions.peek() != null) {
       if (!hasActionAndActionExecutedSuccessfully()) {
@@ -57,5 +65,10 @@ public class QueuedActionService {
     mobsterService.setComplete(true, username).block();
 
     return true;
+  }
+
+  @Override
+  public Queue<AbstractAction> getDailyActions() {
+    return dailyActions;
   }
 }

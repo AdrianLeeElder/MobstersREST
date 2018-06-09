@@ -12,5 +12,8 @@ public class DailyAction {
 
   @Id
   private String id;
-  private String actionName;
+  private String name;
+  private boolean running;
+  private boolean complete;
+  private boolean queued;
 }

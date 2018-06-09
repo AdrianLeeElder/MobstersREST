@@ -1,5 +1,6 @@
 package com.adrian.mobstersrest.mobsters.domain;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,13 +19,17 @@ public class Mobster {
   private String id;
   private String username;
   private String password;
-
-  private boolean pending;
+  private boolean queued;
   private boolean complete;
+  private String botMode = "Daily";
+  private String priority = "Medium";
+  private List<DailyAction> dailyActions;
+  private List<String> buyPropertyMessages;
+
   public Mobster(Mobster mobster) {
     this.id = mobster.id;
     this.username = mobster.getUsername();
-    this.pending = mobster.isPending();
+    this.queued = mobster.isQueued();
     this.complete = mobster.isComplete();
   }
 }

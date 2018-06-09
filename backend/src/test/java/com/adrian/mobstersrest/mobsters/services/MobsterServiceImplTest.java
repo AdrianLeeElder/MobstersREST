@@ -61,7 +61,7 @@ public class MobsterServiceImplTest {
 
     mobsterServiceImpl.addToQueue("zombie");
 
-    assertTrue(mobster.isPending());
+    assertTrue(mobster.isQueued());
   }
 
   @Test

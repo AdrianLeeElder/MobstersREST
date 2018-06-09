@@ -1,11 +1,10 @@
-package com.adrian.mobstersrest.mobsters.actions;
+package com.adrian.mobstersrest.mobsters.services;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.BDDMockito.given;
 
-import com.adrian.mobstersrest.mobsters.services.HumanBotService;
-import com.adrian.mobstersrest.mobsters.services.MobsterService;
+import com.adrian.mobstersrest.mobsters.actions.AbstractAction;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class ActionExecutorTest {
+public class ActionExecutorImplTest {
 
   @Mock
   private WebClient webClient;
@@ -34,19 +33,21 @@ public class ActionExecutorTest {
   @Before
   public void before() {
     MockitoAnnotations.initMocks(this);
-    actionExecutor = new ActionExecutor(mobsterService, webClient, humanBotService);
+    actionExecutor = new ActionExecutorImpl(mobsterService, webClient, humanBotService);
   }
 
   @Test
   public void executeAction() {
     given(action.isFinished()).willReturn(true);
-    given(webClient.getWebWindows()).willReturn(new ArrayList<>(Arrays.asList(webWindow, webWindow)));
+    given(webClient.getWebWindows())
+        .willReturn(new ArrayList<>(Arrays.asList(webWindow, webWindow)));
     assertTrue(actionExecutor.executeAction(action));
   }
 
   @Test
   public void notLoggedInActionShouldFail() {
-    given(webClient.getWebWindows()).willReturn(new ArrayList<>(Collections.singletonList(webWindow)));
+    given(webClient.getWebWindows())
+        .willReturn(new ArrayList<>(Collections.singletonList(webWindow)));
 
     assertFalse(actionExecutor.executeAction(action));
   }

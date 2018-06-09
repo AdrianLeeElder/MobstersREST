@@ -1,5 +1,6 @@
-package com.adrian.mobstersrest.mobsters.actions;
+package com.adrian.mobstersrest.mobsters.services;
 
+import com.adrian.mobstersrest.mobsters.actions.AbstractAction;
 import com.adrian.mobstersrest.mobsters.services.HumanBotService;
 import com.adrian.mobstersrest.mobsters.services.MobsterService;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 @Service
-class ActionExecutor {
+class ActionExecutorImpl implements ActionExecutor {
 
   private static final int MAX_ATTEMPTS = 12;
   private String username;
@@ -30,14 +31,15 @@ class ActionExecutor {
   private WebClient webClient;
   private HumanBotService humanBotService;
 
-  ActionExecutor(MobsterService mobsterService, WebClient webClient,
+  ActionExecutorImpl(MobsterService mobsterService, WebClient webClient,
       HumanBotService humanBotService) {
     this.mobsterService = mobsterService;
     this.webClient = webClient;
     this.humanBotService = humanBotService;
   }
 
-  boolean executeAction(AbstractAction currentAction) {
+  @Override
+  public boolean executeAction(AbstractAction currentAction) {
     this.currentAction = currentAction;
     setCurrentPage();
     setAndExecuteCurrentAction();

@@ -37,7 +37,7 @@ public class MobsterServiceImpl implements MobsterService {
   public Publisher<Void> addToQueue(String username) {
     if (username != null && !username.isEmpty()) {
       Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
-      mobster.setPending(true);
+      mobster.setQueued(true);
 
       return mobsterReactiveRepository.save(mobster).then();
     }

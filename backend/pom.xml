@@ -6,16 +6,16 @@
   <artifactId>backend</artifactId>
   <packaging>jar</packaging>
 
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>backend</name>
+  <description>Demo project for Spring Boot</description>
+
   <parent>
     <groupId>com.adrian</groupId>
     <artifactId>mobsters-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <name>backend</name>
-  <description>Demo project for Spring Boot</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -118,7 +118,6 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <version>${lombok.version}</version>
             </path>
             <path>
               <groupId>org.mapstruct</groupId>
