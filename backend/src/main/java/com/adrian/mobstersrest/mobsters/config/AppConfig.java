@@ -9,15 +9,15 @@ import org.springframework.web.reactive.config.WebFluxConfigurerComposite;
 @Configuration
 public class AppConfig {
 
-  @Bean
-  public WebFluxConfigurer corsConfigurer() {
-    return new WebFluxConfigurerComposite() {
+    @Bean
+    public WebFluxConfigurer corsConfigurer() {
+        return new WebFluxConfigurerComposite() {
 
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*")
-            .allowedMethods("*");
-      }
-    };
-  }
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*")
+                        .allowedMethods("*");
+            }
+        };
+    }
 }

@@ -6,10 +6,10 @@ package com.adrian.mobstersrest.mobsters.actions;
  */
 public abstract class JsAction extends AbstractJsAction {
 
-  @Override
-  public void executeJS() {
-    if (getPage() != null) {
-      getPage().executeJavaScript(getScript());
+    @Override
+    public void executeJS() {
+        if (getPage() != null) {
+            getPage().executeJavaScript(getScript());
+        }
     }
-  }
 }

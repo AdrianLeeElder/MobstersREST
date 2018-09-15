@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebClientConfig {
 
-  @Bean
-  public WebClient webClient() {
-    return new WebClient(BrowserVersion.CHROME);
-  }
+    @Bean
+    public WebClient webClient() {
+        return new WebClient(BrowserVersion.CHROME);
+    }
 }

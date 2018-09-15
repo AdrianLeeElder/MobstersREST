@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface MobsterReactiveRepository extends ReactiveCrudRepository<Mobster, Long> {
 
-  Mono<Mobster> findByUsername(String username);
+    Mono<Mobster> findByUsername(String username);
 }

@@ -4,5 +4,5 @@ import com.adrian.mobstersrest.mobsters.actions.AbstractAction;
 
 public interface ActionExecutor {
 
-  boolean executeAction(AbstractAction currentAction);
+    boolean executeAction(AbstractAction currentAction);
 }

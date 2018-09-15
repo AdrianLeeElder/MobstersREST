@@ -8,5 +8,5 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public interface ExtractAction {
 
-  void extract(HtmlPage htmlPage, String username);
+    void extract(HtmlPage htmlPage, String username);
 }

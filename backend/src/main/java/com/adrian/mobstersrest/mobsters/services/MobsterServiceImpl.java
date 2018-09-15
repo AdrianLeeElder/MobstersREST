@@ -14,47 +14,47 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class MobsterServiceImpl implements MobsterService {
 
-  private MobsterReactiveRepository mobsterReactiveRepository;
+    private MobsterReactiveRepository mobsterReactiveRepository;
 
-  @Override
-  public String retrieveMobsterPassword(String username) {
-    Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
-    return mobster.getPassword();
-  }
-
-  @Override
-  public Flux<Mobster> getMobsters() {
-    return mobsterReactiveRepository
-        .findAll();
-  }
-
-  @Override
-  public Flux<Mobster> createMobsters(Publisher<Mobster> mobster) {
-    return mobsterReactiveRepository.saveAll(mobster);
-  }
-
-  @Override
-  public Publisher<Void> addToQueue(String username) {
-    if (username != null && !username.isEmpty()) {
-      Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
-      mobster.setQueued(true);
-
-      return mobsterReactiveRepository.save(mobster).then();
+    @Override
+    public String retrieveMobsterPassword(String username) {
+        Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
+        return mobster.getPassword();
     }
 
-    log.error("No mobster with username " + username + " found.");
+    @Override
+    public Flux<Mobster> getMobsters() {
+        return mobsterReactiveRepository
+                .findAll();
+    }
 
-    return null;
-  }
+    @Override
+    public Flux<Mobster> createMobsters(Publisher<Mobster> mobster) {
+        return mobsterReactiveRepository.saveAll(mobster);
+    }
 
-  @Override
-  public Mono<Mobster> setComplete(boolean complete, String username) {
-    return mobsterReactiveRepository
-        .findByUsername(username)
-        .flatMap(mobster -> {
-          mobster.setComplete(complete);
+    @Override
+    public Publisher<Void> addToQueue(String username) {
+        if (username != null && !username.isEmpty()) {
+            Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
+            mobster.setQueued(true);
 
-          return mobsterReactiveRepository.save(mobster);
-        });
-  }
+            return mobsterReactiveRepository.save(mobster).then();
+        }
+
+        log.error("No mobster with username " + username + " found.");
+
+        return null;
+    }
+
+    @Override
+    public Mono<Mobster> setComplete(boolean complete, String username) {
+        return mobsterReactiveRepository
+                .findByUsername(username)
+                .flatMap(mobster -> {
+                    mobster.setComplete(complete);
+
+                    return mobsterReactiveRepository.save(mobster);
+                });
+    }
 }

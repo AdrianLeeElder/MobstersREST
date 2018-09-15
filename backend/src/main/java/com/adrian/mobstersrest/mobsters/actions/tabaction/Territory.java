@@ -9,8 +9,8 @@ import com.adrian.mobstersrest.mobsters.actions.JsTabAction;
  */
 public class Territory extends JsTabAction {
 
-  @Override
-  public void response() {
+    @Override
+    public void response() {
 
-  }
+    }
 }

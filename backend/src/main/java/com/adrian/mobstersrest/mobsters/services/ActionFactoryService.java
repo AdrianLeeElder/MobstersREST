@@ -4,5 +4,5 @@ import com.adrian.mobstersrest.mobsters.actions.AbstractAction;
 
 public interface ActionFactoryService {
 
-  AbstractAction getAbstractAction(String actionName);
+    AbstractAction getAbstractAction(String actionName);
 }

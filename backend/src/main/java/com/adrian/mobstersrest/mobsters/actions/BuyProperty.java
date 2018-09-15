@@ -9,18 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class BuyProperty extends JsAction {
 
-  @Autowired
-  private HumanBotService humanBotService;
+    @Autowired
+    private HumanBotService humanBotService;
 
-  @Override
-  public void response() {
-    BuyNext buyNext = new BuyNext();
-    buyNext.extract(getPage(), getMobsterUsername());
+    @Override
+    public void response() {
+        BuyNext buyNext = new BuyNext();
+        buyNext.extract(getPage(), getMobsterUsername());
 
-    NoCashCount noCashCount = new NoCashCount();
-    noCashCount.extract(getPage(), getMobsterUsername());
+        NoCashCount noCashCount = new NoCashCount();
+        noCashCount.extract(getPage(), getMobsterUsername());
 
-    //PropertyBuyer.buyProperty(getPage(), getMobster());
-    humanBotService.randomSleep(2000, 4000);
-  }
+        //PropertyBuyer.buyProperty(getPage(), getMobster());
+        humanBotService.randomSleep(2000, 4000);
+    }
 }

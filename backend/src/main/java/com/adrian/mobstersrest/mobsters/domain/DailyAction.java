@@ -10,10 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class DailyAction {
 
-  @Id
-  private String id;
-  private String name;
-  private boolean running;
-  private boolean complete;
-  private boolean queued;
+    @Id
+    private String id;
+    private String name;
+    private boolean running;
+    private boolean complete;
+    private boolean queued;
 }

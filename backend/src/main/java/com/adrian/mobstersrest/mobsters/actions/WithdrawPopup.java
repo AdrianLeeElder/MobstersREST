@@ -2,34 +2,35 @@ package com.adrian.mobstersrest.mobsters.actions;
 
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import lombok.extern.slf4j.Slf4j;
+
 import java.math.BigInteger;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class WithdrawPopup extends JsAction {
 
-  @Override
-  public void run() {
-    List<?> buttons = getPage().getElementsByTagName("button");
-    HtmlElement button = null;
+    @Override
+    public void run() {
+        List<?> buttons = getPage().getElementsByTagName("button");
+        HtmlElement button = null;
 
-    if (buttons != null) {
-      for (Object b : buttons) {
-        if (((HtmlButton) b).getAttribute("onclick").contains("withdraw2")) {
-          button = (HtmlButton) b;
+        if (buttons != null) {
+            for (Object b : buttons) {
+                if (((HtmlButton) b).getAttribute("onclick").contains("withdraw2")) {
+                    button = (HtmlButton) b;
+                }
+            }
+        } else {
+            throw new IllegalStateException("Withdraw Popup bank buttons are null");
         }
-      }
-    } else {
-      throw new IllegalStateException("Withdraw Popup bank buttons are null");
-    }
 
-    if (button != null) {
-      String bankAccountCash = button.getAttribute("onclick").replace(");$.fancybox.close();", "")
-          .replace("withdraw2(", "");
-      BigInteger bankCash = new BigInteger(bankAccountCash);
+        if (button != null) {
+            String bankAccountCash = button.getAttribute("onclick").replace(");$.fancybox.close();", "")
+                    .replace("withdraw2(", "");
+            BigInteger bankCash = new BigInteger(bankAccountCash);
 //      BigInteger bankDiffMin = new BigInteger(
-      //bankCash.subtract(getMobster().buyPropertyMinProperty().getValue()).toString());
+            //bankCash.subtract(getMobster().buyPropertyMinProperty().getValue()).toString());
 
 //      if (!bankDiffMin.toString().contains("-")) {
 //        BigInteger minWithdraw = new BigInteger("15000000000000");
@@ -56,8 +57,8 @@ public class WithdrawPopup extends JsAction {
 //      throw new IllegalStateException("Error getting Withdraw Popup button");
 //    }
 
-      super.run();
-    }
+            super.run();
+        }
 
 //  private void setFinishedBuyingProperty() {
 //    getMobster().clearActions();
@@ -65,5 +66,5 @@ public class WithdrawPopup extends JsAction {
 //    addMessage(
 //        "Bank minimum reached. (" + getMobster().getBuyPropertyMin() + "). Account finished.");
 //    getMobster().setBuyPropertyMobsterComplete(true);
-  }
+    }
 }

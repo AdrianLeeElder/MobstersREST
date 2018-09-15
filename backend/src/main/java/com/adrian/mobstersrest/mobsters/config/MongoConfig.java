@@ -19,23 +19,23 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @AutoConfigureAfter(EmbeddedMongoAutoConfiguration.class)
 public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
-  @Value("${spring.data.mongodb.uri}")
-  private String uri;
+    @Value("${spring.data.mongodb.uri}")
+    private String uri;
 
-  @Override
-  @Bean
-  public MongoClient reactiveMongoClient() {
-    return MongoClients.create(new ConnectionString(uri));
-  }
+    @Override
+    @Bean
+    public MongoClient reactiveMongoClient() {
+        return MongoClients.create(new ConnectionString(uri));
+    }
 
-  @Override
-  protected String getDatabaseName() {
-    return "mobsters";
-  }
+    @Override
+    protected String getDatabaseName() {
+        return "mobsters";
+    }
 
-  @Bean
-  public LoggingEventListener mongoEventListener() {
-    return new LoggingEventListener();
-  }
+    @Bean
+    public LoggingEventListener mongoEventListener() {
+        return new LoggingEventListener();
+    }
 
 }

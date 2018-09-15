@@ -12,17 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MyMobster extends JsTabAction {
 
-  @Autowired
-  private MobsterService mobsterService;
+    @Autowired
+    private MobsterService mobsterService;
 
-  @Override
-  public void response() {
-    Bounty bounty = new Bounty();
-    bounty.extract(getPage(), getMobsterUsername());
-  }
+    @Override
+    public void response() {
+        Bounty bounty = new Bounty();
+        bounty.extract(getPage(), getMobsterUsername());
+    }
 
-  @Override
-  public String getTabScript() {
-    return super.getScript(); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public String getTabScript() {
+        return super.getScript(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

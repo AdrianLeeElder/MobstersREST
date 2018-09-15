@@ -5,24 +5,24 @@ package com.adrian.mobstersrest.mobsters.actions;
  */
 public abstract class JsTabAction extends AbstractJsAction {
 
-  private int tabID;
+    private int tabID;
 
-  protected int getTabID() {
-    return tabID;
-  }
-
-  protected void setTabID(int tabID) {
-    this.tabID = tabID;
-  }
-
-  @Override
-  protected void executeJS() {
-    if (getPage() != null) {
-      getPage().executeJavaScript(getTabScript());
+    protected int getTabID() {
+        return tabID;
     }
-  }
 
-  public String getTabScript() {
-    return String.format("GetPage(%s);", tabID);
-  }
+    protected void setTabID(int tabID) {
+        this.tabID = tabID;
+    }
+
+    @Override
+    protected void executeJS() {
+        if (getPage() != null) {
+            getPage().executeJavaScript(getTabScript());
+        }
+    }
+
+    public String getTabScript() {
+        return String.format("GetPage(%s);", tabID);
+    }
 }

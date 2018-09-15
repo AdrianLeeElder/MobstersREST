@@ -1,13 +1,5 @@
 package com.adrian.mobstersrest.mobsters.services;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-
 import com.adrian.mobstersrest.mobsters.domain.Mobster;
 import com.adrian.mobstersrest.mobsters.repositories.MobsterReactiveRepository;
 import org.junit.Test;
@@ -19,58 +11,66 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+
 @RunWith(MockitoJUnitRunner.class)
 public class MobsterServiceImplTest {
 
-  @Mock
-  private MobsterReactiveRepository mobsterReactiveRepository;
-  @InjectMocks
-  private MobsterServiceImpl mobsterServiceImpl;
+    @Mock
+    private MobsterReactiveRepository mobsterReactiveRepository;
+    @InjectMocks
+    private MobsterServiceImpl mobsterServiceImpl;
 
-  private String JOHN_SMITH = "John Smith";
+    private String JOHN_SMITH = "John Smith";
 
-  @Test
-  public void readUserPassword() {
-    Mobster mobster = Mobster.builder().username("zombie").password("hax").build();
-    given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
+    @Test
+    public void readUserPassword() {
+        Mobster mobster = Mobster.builder().username("zombie").password("hax").build();
+        given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
 
-    assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
-  }
+        assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
+    }
 
-  @Test
-  public void createMobsters() {
-    Mobster mobster = new Mobster();
-    mobster.setId("1");
-    mobster.setUsername(JOHN_SMITH);
+    @Test
+    public void createMobsters() {
+        Mobster mobster = new Mobster();
+        mobster.setId("1");
+        mobster.setUsername(JOHN_SMITH);
 
-    given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
-        .willReturn(Flux.just(mobster));
+        given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
+                .willReturn(Flux.just(mobster));
 
-    Flux<Mobster> createdMobster = mobsterServiceImpl.createMobsters(Flux.just(mobster));
+        Flux<Mobster> createdMobster = mobsterServiceImpl.createMobsters(Flux.just(mobster));
 
-    assertThat(mobster, is(equalTo(createdMobster.blockFirst())));
-  }
+        assertThat(mobster, is(equalTo(createdMobster.blockFirst())));
+    }
 
-  @Test
-  public void addToQueue() {
-    Mobster mobster = Mobster.builder().username("zombie").build();
-    given(mobsterReactiveRepository.findByUsername(anyString()))
-        .willReturn(Mono.just(mobster));
-    given(mobsterReactiveRepository.save(mobster))
-        .willReturn(Mono.just(mobster));
+    @Test
+    public void addToQueue() {
+        Mobster mobster = Mobster.builder().username("zombie").build();
+        given(mobsterReactiveRepository.findByUsername(anyString()))
+                .willReturn(Mono.just(mobster));
+        given(mobsterReactiveRepository.save(mobster))
+                .willReturn(Mono.just(mobster));
 
-    mobsterServiceImpl.addToQueue("zombie");
+        mobsterServiceImpl.addToQueue("zombie");
 
-    assertTrue(mobster.isQueued());
-  }
+        assertTrue(mobster.isQueued());
+    }
 
-  @Test
-  public void setComplete() {
-    Mobster mobster = Mobster.builder().username("zombie").build();
+    @Test
+    public void setComplete() {
+        Mobster mobster = Mobster.builder().username("zombie").build();
 
-    given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
-    given(mobsterReactiveRepository.save(any())).willReturn(Mono.just(mobster));
+        given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
+        given(mobsterReactiveRepository.save(any())).willReturn(Mono.just(mobster));
 
-    assertTrue(mobsterServiceImpl.setComplete(true, "zombie").block().isComplete());
-  }
+        assertTrue(mobsterServiceImpl.setComplete(true, "zombie").block().isComplete());
+    }
 }

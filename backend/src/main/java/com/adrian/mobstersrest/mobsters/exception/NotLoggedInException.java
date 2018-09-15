@@ -5,8 +5,8 @@ package com.adrian.mobstersrest.mobsters.exception;
  */
 public class NotLoggedInException extends RuntimeException {
 
-  public NotLoggedInException(String username) {
-    super(username + " not logged in.");
-  }
+    public NotLoggedInException(String username) {
+        super(username + " not logged in.");
+    }
 
 }

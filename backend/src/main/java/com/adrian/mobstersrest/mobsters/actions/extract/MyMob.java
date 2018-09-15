@@ -9,8 +9,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public class MyMob implements ExtractAction {
 
-  @Override
-  public void extract(HtmlPage page, String username) {
-    // TODO Auto-generated method stub
-  }
+    @Override
+    public void extract(HtmlPage page, String username) {
+        // TODO Auto-generated method stub
+    }
 }
