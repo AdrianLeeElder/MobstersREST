@@ -14,10 +14,11 @@
 
 <script>
 export default {
-  props: ['item'],
-  name: 'StatusIndicator'
-
-}
+  name: "StatusIndicator",
+  props: {
+    item: Object
+  }
+};
 </script>
 
 <style>

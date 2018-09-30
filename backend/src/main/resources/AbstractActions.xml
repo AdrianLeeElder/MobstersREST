@@ -8,8 +8,7 @@
     <action>
         <name>200 Energy Link</name>
         <finishText>Neeko has graciously rewarded you with an EXTRA 200 energy boost!</finishText>
-        <finishText>You have already collected your 200 energy for today. Please come back tomorrow.
-        </finishText>
+        <finishText>You have already collected your 200 energy for today. Please come back tomorrow.</finishText>
         <script>bonusMe(1);</script>
     </action>
     <action>
@@ -20,7 +19,7 @@
     </action>
     <action>
         <name>My Mob</name>
-        <finishText>Your Top Mob</finishText>
+        <finishText>Active Top Mob Slots</finishText>
         <tab>10</tab>
     </action>
     <action>
@@ -50,7 +49,7 @@
     </action>
     <action>
         <name>Send All</name>
-        <finishText>Successo!</finishText>
+        <finishText>You have sent a</finishText>
         <script>sendalle(i);</script>
     </action>
     <action>
@@ -71,8 +70,7 @@
     <action>
         <name>Deposit</name>
         <finishText>You have successfully deposited</finishText>
-        <script>rgsa24ff44();setTimeout(function(){_ext2=$('#popup').html();GetPage(3)},350);|-1
-        </script>
+        <script>rgsa24ff44();setTimeout(function(){_ext2=$('#popup').html();GetPage(3)},350);|-1</script>
         <element>myCashLogg</element>
     </action>
     <action>
@@ -103,5 +101,10 @@
         <name>My Mobster</name>
         <finishText>Convene with your fellow mobbie</finishText>
         <script>GetPage('seePage_'+fuckoff);</script>
+    </action>
+    <action>
+        <name>Refresh</name>
+        <finishText></finishText>
+        <script>init();_oudblic=0;_oudic=0;</script>
     </action>
 </AbstractAction>

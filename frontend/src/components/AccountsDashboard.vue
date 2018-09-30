@@ -13,12 +13,12 @@
       <v-flex xs12>
         <v-data-table :headers="accountHeaders" :items="mobsters" hide-actions item-key="username" v-model="selectedAccounts" select-all>
           <template slot="items" slot-scope="props">
-            <tr @click="props.expanded = !props.expanded" style="cursor: pointer">
+            <tr @click="expandMobster(props)" style="cursor: pointer">
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details @click.stop></v-checkbox>
               </td>
               <td>
-                <status-indicator :item="props.item"></status-indicator>
+                <StatusIndicator :item="props.item"></StatusIndicator>
               </td>
               <td>{{props.item.username}}</td>
               <td>{{props.item.botMode}}</td>
@@ -42,25 +42,7 @@
             </tr>
           </template>
           <template slot="expand" slot-scope="props">
-            <v-card class="ma-3" v-if="props.item.botMode === 'Daily'">
-              <v-data-table :items="props.item.dailyActions" :headers="dailyActionHeaders">
-                <template slot="items" slot-scope="props">
-                  <td>{{props.item.name}}</td>
-                  <td>
-                    <status-indicator :item="props.item" />
-                  </td>
-                </template>
-              </v-data-table>
-            </v-card>
-            <v-card v-else-if="props.item.botMode === 'Buy Property'" class="ma-3">
-              <v-list>
-                <v-list-tile v-for="(message, index) in props.item.buyPropertyMessages" :key="index">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{message}}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-              </v-list>
-            </v-card>
+            <ActionJobs :actionJobs="activeActionJobs" />
           </template>
         </v-data-table>
         <v-dialog v-model="showAccountEditor" max-width="300px">
@@ -68,7 +50,6 @@
             <v-card-title>Edit Account Settings</v-card-title>
             <v-card-text>
               <v-select label="Priority" :items="priorities" v-model="editingAccount.priority"></v-select>
-              <v-select label="Bot Mode" :items="botModes" v-model="editingAccount.botMode"></v-select>
             </v-card-text>
             <v-card-actions>
               <!-- TODO: make this save in database -->
@@ -82,134 +63,149 @@
 </template>
 
 <script>
-import { AXIOS } from './http-common'
-import StatusIndicator from './StatusIndicator'
+import { AXIOS } from "./http-common"
+import StatusIndicator from "./StatusIndicator"
+import ActionJobs from "./ActionJobs"
 
 export default {
-  name: 'AccountsDashboard',
-  data () {
+  name: "AccountsDashboard",
+  data() {
     return {
-      dailyActionHeaders: [
-        { text: 'Action Name', value: 'name', sortable: false },
-        { text: 'Status', value: 'running', sortable: false }
-      ],
       accountHeaders: [
-        { text: 'Status', value: 'status' },
-        { text: 'Username', value: 'username' },
-        { text: 'Bot Mode', value: 'botMode' },
-        { text: 'Priority', value: 'priority', sortable: true },
-        { text: 'Account', value: 'account' }
+        { text: "Status", value: "status" },
+        { text: "Username", value: "username" },
+        { text: "Priority", value: "priority", sortable: true },
+        { text: "Account", value: "account" }
       ],
       mobsters: [],
       editingAccount: {
-        priority: 'Low',
-        botMode: 'Daily'
+        priority: "Low",
+        botMode: "Daily"
       },
-      priorities: ['Low', 'Medium', 'High'],
-      botModes: ['Buy Property', 'Daily'],
+      priorities: ["Low", "Medium", "High"],
       showAccountEditor: false,
-      selectedAccounts: []
-    }
+      selectedAccounts: [],
+      activeActionJobs: []
+    };
   },
   methods: {
-    editAccount: function (account) {
-      this.editingAccount = account
-      this.showAccountEditor = true
+    editAccount: function(account) {
+      this.editingAccount = account;
+      this.showAccountEditor = true;
     },
-    saveAccount: function () {
-      this.showAccountEditor = false
+    saveAccount: function() {
+      this.showAccountEditor = false;
     },
-    addToQueue: function () {
-      this.selectedAccounts.forEach((mobster) => {
-        // TODO: MAKE THIS ACTUAL UPDATE API
-        if (!mobster.running && !mobster.queued) {
-          mobster.queued = true
-        }
-      })
+    addToQueue: function() {
+      var usernameList = [];
+      this.selectedAccounts.forEach(mobster => {
+        usernameList.push(mobster.username);
+      });
 
-      this.selectedAccounts = []
+      AXIOS.post("actionjob/new", {
+        usernames: usernameList
+      }).then(response => {});
+      this.selectedAccounts = [];
+    },
+    loadMobsters: function() {
+      AXIOS.get(`mobster`)
+        .then(response => {
+          // JSON responses are automatically parsed.
+          this.mobsters = response.data;
+        }, this)
+        .catch(e => {
+          // this.errors.push(e)
+          this.mobsters = [
+            {
+              username: "zombie",
+              dailyActions: [
+                {
+                  name: "Login",
+                  running: false,
+                  complete: true
+                },
+                {
+                  name: "Daily Energy Link",
+                  running: true,
+                  complete: false,
+                  queued: false
+                },
+                {
+                  name: "Logout",
+                  running: false,
+                  complete: false,
+                  queued: true
+                }
+              ],
+              priority: "Low"
+            },
+            {
+              username: "bigtrac",
+              dailyActions: [
+                {
+                  name: "Login",
+                  running: false,
+                  complete: true
+                },
+                {
+                  name: "Daily Energy Link",
+                  running: true,
+                  complete: true
+                },
+                {
+                  name: "Logout",
+                  running: false,
+                  complete: false
+                }
+              ],
+              botMode: "Buy Property",
+              buyPropertyMessages: [
+                "Bought a Skyscraper for $1000 x 10",
+                "Buying more newsstands to see what to buy next"
+              ],
+              priority: "High",
+              running: false,
+              queued: false,
+              complete: false
+            }
+          ];
+        }, this);
+    },
+    expandMobster(props) {
+      props.expanded = !props.expanded;
+      this.mobsterToTickActionJobs = props.item;
+    },
+    updateMobsterActionJobs() {
+      setInterval(() => {
+        if (this.mobsterToTickActionJobs !== undefined) {
+          var username = this.mobsterToTickActionJobs.username;
+          if (
+            Object.keys(this.mobsterToTickActionJobs).length > 0 &&
+            username !== undefined &&
+            username.length > 0
+          ) {
+            AXIOS.get("actionjob/mobster/" + username).then((response) => {
+              this.activeActionJobs = response.data;
+            });
+          }
+        }
+      }, 5000);
     }
   },
-  created () {
-    AXIOS.get(`mobsters`)
-      .then(response => {
-        // JSON responses are automatically parsed.
-        this.mobsters = response.data
-      }, this)
-      .catch(e => {
-        // this.errors.push(e)
-        this.mobsters = [
-          {
-            username: 'zombie',
-            dailyActions: [
-              {
-                name: 'Login',
-                running: false,
-                complete: true
-              },
-              {
-                name: 'Daily Energy Link',
-                running: true,
-                complete: false,
-                queued: false
-              },
-              {
-                name: 'Logout',
-                running: false,
-                complete: false,
-                queued: true
-              }
-            ],
-            botMode: 'Daily',
-            priority: 'Low',
-            running: true,
-            queued: false,
-            complete: false
-          },
-          {
-            username: 'bigtrac',
-            dailyActions: [
-              {
-                name: 'Login',
-                running: false,
-                complete: true,
-                queued: false
-              },
-              {
-                name: 'Daily Energy Link',
-                running: true,
-                complete: true,
-                queued: false
-              },
-              {
-                name: 'Logout',
-                running: false,
-                complete: false,
-                queued: true
-              }
-            ],
-            botMode: 'Buy Property',
-            buyPropertyMessages: [
-              'Bought a Skyscraper for $1000 x 10',
-              'Buying more newsstands to see what to buy next'
-            ],
-            priority: 'High',
-            running: false,
-            queued: false,
-            complete: false
-          }
-        ]
-      }, this)
+  created() {
+    this.loadMobsters();
+    this.updateMobsterActionJobs();
   },
   computed: {
-    getStatusIcon: function (dailyAction) {
+    getStatusIcon: function(dailyAction) {
       if (dailyAction.running) {
-        return 'running'
+        return "running";
       }
     }
   },
   components: {
-    StatusIndicator
+    StatusIndicator,
+    ActionJobs
   }
-}
+};
 </script>
