@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class WithdrawPopup extends JsAction {
+public class WithdrawPopup extends AbstractAction {
 
     @Override
     public void run() {
-        List<?> buttons = getPage().getElementsByTagName("button");
+        List<?> buttons = getChromeDriver().findElementsByName("button");
         HtmlElement button = null;
 
         if (buttons != null) {
@@ -58,8 +58,6 @@ public class WithdrawPopup extends JsAction {
 //    } else {
 //      throw new IllegalStateException("Error getting Withdraw Popup button");
 //    }
-
-            super.run();
         }
 
 //  private void setFinishedBuyingProperty() {

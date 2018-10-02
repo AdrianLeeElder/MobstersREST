@@ -1,6 +1,6 @@
 package com.adrian.mobsters.service;
 
-import com.adrian.mobsters.actions.Login;
+import com.adrian.mobsters.Login;
 import com.adrian.mobsters.config.ActionExecutorProperties;
 import com.adrian.mobsters.domain.Action;
 import com.adrian.mobsters.domain.ActionJob;
@@ -56,20 +56,20 @@ public class ActionJobServiceImplTest {
     private ActionJob actionJob;
     private List<Action> actionList;
     private Proxy proxy;
-    private Login loginAction;
+    private Login loginHtmlUnit;
 
     @Before
     public void setUp() throws Exception, ActionFailedException {
         proxy = new Proxy("localhost", 2323);
         Mobster mobster = new Mobster("1", "BOB", "");
-        actionList = Collections.singletonList(new Action("Login"));
+        actionList = Collections.singletonList(new Action("LoginHtmlUnit"));
         actionJob = new ActionJob(mobster, actionList, true, false);
-        loginAction = new Login();
+        loginHtmlUnit = new Login();
 
         given(webClient.getOptions()).willReturn(webClientOptions);
         given(proxyService.getAvailableProxy()).willReturn(proxy);
         given(applicationContext.getBean("webClient")).willReturn(webClient);
-        given(actionService.getAction(anyString())).willReturn(loginAction);
+        given(actionService.getAction(anyString())).willReturn(loginHtmlUnit);
         given(actionJobReactiveRepository.save(actionJob)).willReturn(Mono.just(actionJob));
         given(proxyReactiveRepository.save(proxy)).willReturn(Mono.just(proxy));
         given(actionExecutorProperties.getMaxFailures()).willReturn(1);

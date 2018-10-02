@@ -1,12 +1,12 @@
 package com.adrian.mobsters.actions.extract;
 
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 /**
  * @author Adrian
  */
 public interface ExtractAction {
 
-    void extract(HtmlPage htmlPage, String username);
+    void extract(ChromeDriver chromeDriver, String username);
 }

@@ -13,6 +13,8 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -48,8 +50,6 @@ public class ActionJobServiceImpl implements ActionJobService {
     private void runActionJob(ActionJob actionJob) throws ActionFailedException {
         log.debug("Executing action job {}", actionJob);
         executeActions(actionJob);
-        actionJob.setComplete(true);
-        actionJobReactiveRepository.save(actionJob).subscribe();
     }
 
     private void handleActionJobFailure(Throwable e, ActionJob actionJob) {
@@ -83,17 +83,19 @@ public class ActionJobServiceImpl implements ActionJobService {
         Proxy proxy = proxyService.getAvailableProxy();
         proxy.setAttempts(proxy.getAttempts() + 1);
         proxyReactiveRepository.save(proxy).subscribe();
-        WebClient webClient = getWebClient();
-        setWebClientProxy(webClient, proxy);
+        ChromeDriver chromeDriver = getWebClient();
 
         try {
             proxy.setInUse(true);
             proxyReactiveRepository.save(proxy).subscribe();
 
-            processActionJobList(actionJob, webClient);
+            processActionJobList(actionJob, chromeDriver);
 
             proxy.setSuccesses(proxy.getSuccesses() + 1);
             proxyReactiveRepository.save(proxy).subscribe();
+
+            actionJob.setComplete(true);
+            actionJobReactiveRepository.save(actionJob).subscribe();
         } catch (Exception ex) {
             log.error("Uncaught exception {}", ex);
         } finally {
@@ -104,20 +106,14 @@ public class ActionJobServiceImpl implements ActionJobService {
         }
     }
 
-    private void processActionJobList(ActionJob actionJob, WebClient webClient) throws ActionFailedException {
+    private void processActionJobList(ActionJob actionJob, ChromeDriver chromeDriver) throws ActionFailedException {
         for (Action action : actionJob.getActionList()) {
             runAction(actionJob, action);
-            actionExecutor.executeAction(webClient, getAbstractAction(actionJob, action));
+            actionExecutor.executeAction(chromeDriver, getAbstractAction(actionJob, action));
             action.setRunning(false);
             action.setComplete(true);
             actionJobReactiveRepository.save(actionJob).block();
         }
-    }
-
-    private void setWebClientProxy(WebClient webClient, Proxy proxy) {
-        webClient.getOptions().setProxyConfig(new ProxyConfig(proxy.getHost(), proxy.getPort()));
-
-        log.debug("Creating webclient with proxy: {}", proxy);
     }
 
     private AbstractAction getAbstractAction(ActionJob actionJob, Action action) {
@@ -127,8 +123,10 @@ public class ActionJobServiceImpl implements ActionJobService {
         return abstractAction;
     }
 
-    protected WebClient getWebClient() {
-        return (WebClient) applicationContext.getBean("webClient");
+    protected ChromeDriver getWebClient() {
+        return new ChromeDriver(
+                (ChromeOptions) applicationContext.getBean("chromeOptions")
+        );
     }
 
     private void runAction(ActionJob actionJob, Action action) {

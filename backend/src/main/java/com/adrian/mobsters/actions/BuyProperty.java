@@ -9,20 +9,30 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class BuyProperty extends JsAction {
+public class BuyProperty extends AbstractAction {
 
     @Autowired
     private HumanBotService humanBotService;
 
     @Override
+    public void run() {
+
+    }
+
+    @Override
     public void response() {
         BuyNext buyNext = new BuyNext();
-        buyNext.extract(getPage(), getMobsterUsername());
+        buyNext.extract(getChromeDriver(), getMobsterUsername());
 
         NoCashCount noCashCount = new NoCashCount();
-        noCashCount.extract(getPage(), getMobsterUsername());
+        noCashCount.extract(getChromeDriver(), getMobsterUsername());
 
         //PropertyBuyer.buyProperty(getPage(), getMobster());
         humanBotService.randomSleep(2000, 4000);
+    }
+
+    @Override
+    public void printAction() {
+
     }
 }

@@ -3,9 +3,6 @@ package com.adrian.mobsters.actions;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Optimizer<T> extends JsAction {
+public class Optimizer extends AbstractAction {
 
-    @Override
-    public void response() {
-    }
 }

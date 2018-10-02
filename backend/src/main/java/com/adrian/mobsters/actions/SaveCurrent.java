@@ -1,12 +1,9 @@
 package com.adrian.mobsters.actions;
 
+import com.adrian.mobsters.exception.ActionFailedException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SaveCurrent<T> extends JsAction {
+public class SaveCurrent extends AbstractAction {
 
-    @Override
-    public void response() {
-        // TODO Auto-generated method stub
-    }
 }

@@ -47,7 +47,7 @@ public class ActionJobCreatorTest {
     @Before
     public void setUp() {
         mobster = new Mobster("1", "zombie", "");
-        dailyActionList = Collections.singletonList(new DailyAction("Login"));
+        dailyActionList = Collections.singletonList(new DailyAction("LoginHtmlUnit"));
 
         given(mobsterReactiveRepository.findByUsernameRegex("zombie")).willReturn(Flux.just(mobster));
         given(dailyActionReactiveRepository.findAll()).willReturn(Flux.fromIterable(dailyActionList));
@@ -65,18 +65,9 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("Login");
+        ActionJob expected = newActionJob("LoginHtmlUnit");
 
         assertEquals(Collections.singletonList(expected), actual);
-    }
-
-    @Test
-    public void mobsterAlreadyHasADailyJob() {
-        given(actionJobReactiveRepository.findByDailyTrueAndMobsterUsernameRegex("zombie"))
-                .willReturn(Flux.fromIterable(Collections.singletonList(emptyActionJobWithNoActions())));
-
-        expectedException.expect(DailyActionJobAlreadyExistForMobster.class);
-        actionJobCreator.getNewDailyActionJobs(Collections.singletonList("zombie")).subscribe();
     }
 
     @Test
@@ -107,7 +98,7 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("Login");
+        ActionJob expected = newActionJob("LoginHtmlUnit");
 
         assertEquals(Collections.singletonList(expected), actual);
     }
@@ -119,7 +110,7 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("Login");
+        ActionJob expected = newActionJob("LoginHtmlUnit");
 
         assertEquals(Collections.singletonList(expected), actual);
     }

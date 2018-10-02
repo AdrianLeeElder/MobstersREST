@@ -1,13 +1,13 @@
 package com.adrian.mobsters.actions.extract;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BuyNext implements ExtractAction {
 
     @Override
-    public void extract(HtmlPage page, String username) {
+    public void extract(ChromeDriver chromeDriver, String username) {
 
     }
 }

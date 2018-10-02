@@ -3,95 +3,95 @@
     <action>
         <name>Bank</name>
         <finishText>Currently in your bank account</finishText>
-        <tab>3</tab>
+        <xPath><xPath>//span[contains(text(), 'Bank')]</xPath></xPath>
     </action>
     <action>
         <name>200 Energy Link</name>
         <finishText>Neeko has graciously rewarded you with an EXTRA 200 energy boost!</finishText>
         <finishText>You have already collected your 200 energy for today. Please come back tomorrow.</finishText>
-        <script>bonusMe(1);</script>
+        <xPath>//*[@id="content"]/div[5]/div/h3/a[1]</xPath>
+        <fancyBox>true</fancyBox>
     </action>
     <action>
         <name>Daily Bonus Link</name>
         <finishText>Neeko has graciously rewarded you with</finishText>
         <finishText>collected your daily bonus</finishText>
-        <script>bonusMe(2);</script>
+        <xPath>//*[@id="content"]/div[5]/div/h3/a[2]</xPath>
+        <fancyBox>true</fancyBox>
     </action>
     <action>
         <name>My Mob</name>
         <finishText>Active Top Mob Slots</finishText>
-        <tab>10</tab>
+        <xPath>//span[contains(text(), 'My Mob ')]</xPath>
     </action>
     <action>
         <name>Accept All</name>
         <finishText>You have successfully added</finishText>
-        <script>acceptAll();hidePending();</script>
     </action>
     <action>
         <name>Optimizer Popup</name>
         <finishText>This will replace your current Top Mob</finishText>
-        <script>optimizerPop();rgSetCookie('rgtopmobpage94907', '0',1);</script>
+        <xPath>//a[text()='Optimizer']</xPath>
     </action>
     <action>
         <name>Optimizer</name>
         <finishText>Successo!</finishText>
-        <script>tmopt();RefreshStats();</script>
+        <xPath>//*[@id="fancybox-content"]/div/button[1]</xPath>
+        <fancyBox>true</fancyBox>
     </action>
     <action>
         <name>Save Current Popup</name>
         <finishText>This will save your current Top Mob to be</finishText>
-        <script>savePop();</script>
     </action>
     <action>
         <name>Save Current</name>
         <finishText>Top Mob Saved</finishText>
-        <script>tmsave();</script>
+        <xPath>//*[@id="tmob"]/div/div/div[1]/span/span/div[2]/a</xPath>
     </action>
     <action>
         <name>Send All</name>
         <finishText>You have sent a</finishText>
-        <script>sendalle(i);</script>
+        <xPath>//a[text()='Send All']</xPath>
     </action>
     <action>
         <name>Collect All</name>
         <finishText>You have collected</finishText>
-        <script>collectallc(i);</script>
+        <xPath>//a[text()='Collect All']</xPath>
     </action>
     <action>
         <name>Restore Popup</name>
         <finishText>This will demote everyone in your current top mob and restore</finishText>
-        <script>restorePop();</script>
+        <xPath>//a[text()='Restore to Saved']</xPath>
     </action>
     <action>
         <name>Restore</name>
         <finishText>Top Mob Restored</finishText>
-        <script>tmrestore();|-1</script>
+        <xpath>//*[@id="fancybox-content"]/div/button[1]</xpath>
     </action>
     <action>
         <name>Deposit</name>
         <finishText>You have successfully deposited</finishText>
-        <script>rgsa24ff44();setTimeout(function(){_ext2=$('#popup').html();GetPage(3)},350);|-1</script>
-        <element>myCashLogg</element>
+        <xPath>//*[@id="bank"]/div[2]/button</xPath>
     </action>
     <action>
         <name>Territory</name>
         <finishText>newsstand</finishText>
-        <tab>4</tab>
+        <xPath>//span[contains(text(), 'Territory')]</xPath>
     </action>
     <action>
         <name>Withdraw</name>
         <finishText>fancybox-tmp</finishText>
-        <script>withdraw();</script>
-        <element>refreshButtonDiv</element>
+        <xPath>//*[@id="bank"]/div[3]/button</xPath>
     </action>
     <action>
         <name>Withdraw Popup</name>
         <finishText>You have successfully withdrawn</finishText>
-        <element>refreshButtonDiv</element>
+        <xPath>//*[@id="fancybox-content"]/div/button[1]</xPath>
     </action>
     <action>
         <name>Logout</name>
         <finishText>WELCOME TO MOBSTERS PLAYERS REVENGE!</finishText>
+        <xPath>//*[@id="headerFrame"]/center/nav/div/div[4]/a</xPath>
     </action>
     <action>
         <name>Login</name>
@@ -100,11 +100,15 @@
     <action>
         <name>My Mobster</name>
         <finishText>Convene with your fellow mobbie</finishText>
-        <script>GetPage('seePage_'+fuckoff);</script>
+        <xPath>//span[contains(text(), 'My Mob')]</xPath>
     </action>
     <action>
         <name>Refresh</name>
         <finishText></finishText>
-        <script>init();_oudblic=0;_oudic=0;</script>
+        <xPath>//div[text()='REFRESH']</xPath>
+    </action>
+    <action>
+        <name>Fancy Box</name>
+        <xPath>//*[@id="fancybox-close"]</xPath>
     </action>
 </AbstractAction>

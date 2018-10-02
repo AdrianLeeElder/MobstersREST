@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service;
  * @author Adrian Elder <AdrianLeeElder@gmail.com>
  */
 @Service
-public class Withdraw extends JsAction {
+public class Withdraw extends AbstractAction {
 
 }

@@ -1,14 +1,20 @@
 package com.adrian.mobsters.actions;
 
+import com.adrian.mobsters.FancyBox;
+import com.adrian.mobsters.Login;
 import com.adrian.mobsters.exception.ActionFailedException;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.adrian.mobsters.service.ActionExecutor;
+import com.adrian.mobsters.service.ActionService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * An AbstractAction is used to describe some sort of event or action that can be queued up and
@@ -20,14 +26,12 @@ import java.util.Objects;
 @Data
 public abstract class AbstractAction {
 
+    @Autowired
+    private ActionExecutor actionExecutor;
     /**
      * The name of this action.
      */
     private String name;
-    /**
-     * The DOM element ID associated with this action.
-     */
-    private String elementID;
     /**
      * XPaths associated with this action.
      */
@@ -36,10 +40,6 @@ public abstract class AbstractAction {
      * A List of possible textual options that should be the current web page to consider this action complete.
      */
     private List<String> finishText;
-    /**
-     * The current displayed page.
-     */
-    private HtmlPage page;
     /**
      * Whether or not this action is complete.
      */
@@ -64,82 +64,83 @@ public abstract class AbstractAction {
      * A {@link} WebClient that persist across multiple actions. This is set from the
      * {@link com.adrian.mobsters.service.ActionExecutor}.
      */
-    private WebClient webClient;
-//    /**
-//     * Store properties in a shared action context, so that actions can share
-//     */
-//    private Map<String, String> actionContext;
+    private ChromeDriver chromeDriver;
+    private String sourcePage;
+    private boolean fancyBox;
+    @Autowired
+    private ActionService actionService;
 
     public String getName() {
         return name;
     }
 
-    public abstract void run() throws ActionFailedException;
+    public void run() throws ActionFailedException {
+        log.trace("Running action {}", getName());
+        WebElement webElement = getChromeDriver().findElement(By.xpath(getXPath()));
 
-    public String getElementID() {
-        return elementID;
+        if (webElement.isDisplayed()) {
+            webElement.click();
+        }
     }
 
-    public String getXPath() {
-        return xPath;
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
     }
 
-    public abstract void response();
-
-    /**
-     * An HtmlPage instance used for extractions or executing an AbstractAction.
-     *
-     * @return the page attached to this action
-     */
-    public HtmlPage getPage() {
-        return page;
+    public void response() throws ActionFailedException {
+        if (fancyBox) {
+            closeFancyBox();
+        }
     }
 
-    /**
-     * Set the page attached to this action
-     *
-     * @param page the page to attach to this action
-     */
-    public void setPage(HtmlPage page) {
-        Objects.requireNonNull(page);
-        this.page = page;
+    private void closeFancyBox() throws ActionFailedException {
+        log.trace("Attempting to close fancy box.");
+        FancyBox fancyBox = (FancyBox) actionService.getAction("Fancy Box");
+        actionExecutor.executeAction(getChromeDriver(), fancyBox);
     }
 
     /**
      * @return Whether or not this action is finished executing
      */
     public boolean isFinished() {
-        String content = null;
-        if (page != null) {
-            content = page.asXml();
-            //TODO: figure out what to do with this;
-        }
-
+        log.trace("Polling finished status for {}", getName());
+        switchToEmbeddedIframe();
+        String content = getChromeDriver().getPageSource();
         if (isFinished) {
             setFinished(true);
             return true;
         }
 
         for (String text : finishText) {
-            if (content != null && content.matches("(?s).*?" + text + ".*")) {
-                setFinished(true);
-                return true;
+            if (content != null) {
+                Pattern pattern = Pattern.compile(text);
+                Matcher matcher = pattern.matcher(content);
+
+                if (matcher.find()) {
+                    setFinished(true);
+
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    /**
-     * A list of possible matches on the current page that would indicate this action has successfully
-     * executed.
-     */
-    public List<String> getFinishedText() {
-        return new ArrayList<>(finishText);
+    public void switchToEmbeddedIframe() {
+        if (this instanceof Login) {
+            List<WebElement> webElements = getChromeDriver().findElements(By.xpath("//*[@id=\"mprgameframe\"]"));
+
+            if (webElements.size() > 0) {
+                getChromeDriver().switchTo().frame(webElements.get(0));
+            }
+        }
     }
 
     /**
      * Describe how this action will be displayed (usually in a log)
      */
-    public abstract void printAction();
+    public void printAction() {
+        //log.info("");
+    }
 }

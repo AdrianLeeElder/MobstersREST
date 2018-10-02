@@ -1,6 +1,6 @@
 package com.adrian.mobsters.actions.extract;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class MyMobExtract implements ExtractAction {
 
     @Override
-    public void extract(HtmlPage page, String username) {
+    public void extract(ChromeDriver chromeDriver, String username) {
         // TODO Auto-generated method stub
     }
 }

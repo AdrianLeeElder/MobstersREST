@@ -13,7 +13,10 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -71,9 +74,9 @@ public class ActionService {
         }
 
         ActionBuilder actionBuilder = new ActionBuilder();
-        String name = "", elementID = "", script = "";
+        String name = "", xPath = "";
+        boolean fancyBox = false;
         ArrayList<String> finishText = new ArrayList<>();
-        int tabID = -1;
 
         Node node = nodeList.item(0);
         do {
@@ -81,22 +84,23 @@ public class ActionService {
                 case "name":
                     name = node.getTextContent();
                     break;
-                case "script":
-                    script = node.getTextContent();
-                    break;
-                case "tab":
-                    tabID = Integer.parseInt(node.getTextContent());
-                    break;
-                case "element":
-                    elementID = node.getTextContent();
-                    break;
                 case "finishText":
                     finishText.add(node.getTextContent());
+                    break;
+                case "xPath":
+                    xPath = node.getTextContent();
+                    break;
+                case "fancyBox":
+                    fancyBox = Boolean.valueOf(node.getTextContent());
                     break;
             }
         } while ((node = node.getNextSibling()) != null);
 
-        return actionBuilder.elementID(elementID).finishText(finishText).tab(tabID).name(name)
-                .script(script).build(abstractAction);
+        return actionBuilder
+                .name(name)
+                .finishText(finishText)
+                .xPath(xPath)
+                .fancyBox(fancyBox)
+                .build(abstractAction);
     }
 }

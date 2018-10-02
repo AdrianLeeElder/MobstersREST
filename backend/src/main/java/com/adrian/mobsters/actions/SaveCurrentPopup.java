@@ -4,11 +4,6 @@ package com.adrian.mobsters.actions;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SaveCurrentPopup extends JsAction {
+public class SaveCurrentPopup extends AbstractAction {
 
-    @Override
-    public void response() {
-        // TODO Auto-generated method stub
-
-    }
 }

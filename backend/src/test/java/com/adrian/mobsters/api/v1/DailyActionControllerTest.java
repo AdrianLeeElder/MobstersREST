@@ -35,7 +35,7 @@ public class DailyActionControllerTest {
                 .bindToController(new DailyActionController(dailyActionReactiveRepository))
                 .build();
 
-        loginAction = new DailyAction("Login");
+        loginAction = new DailyAction("LoginHtmlUnit");
         logoutAction = new DailyAction("Logout");
         dailyActionList = Arrays.asList(loginAction, logoutAction);
         given(dailyActionReactiveRepository.save(loginAction)).willReturn(Mono.just(loginAction));

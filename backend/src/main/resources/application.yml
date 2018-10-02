@@ -9,14 +9,14 @@ spring:
   data:
     mongodb:
       uri: mongodb://adrian:haxuk23D@localhost:27017/admin
----
-action-executor:
-  thread-core-size: 5
-  thread-queue-capacity: 1000
-  max-failures: 3
 logging:
   level:
     org: OFF
     com:
       adrian:
-        mobsters: ALL
+        mobsters: TRACE
+---
+action-executor:
+  thread-core-size: 5
+  thread-queue-capacity: 1000
+  max-failures: 3

@@ -1,6 +1,6 @@
 package com.adrian.mobsters.actions.tabaction;
 
-import com.adrian.mobsters.actions.JsTabAction;
+import com.adrian.mobsters.actions.AbstractAction;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,10 +9,6 @@ import org.springframework.stereotype.Service;
  * @author Adrian Elder <AdrianLeeElder@gmail.com>
  */
 @Service
-public class Territory extends JsTabAction {
+public class Territory extends AbstractAction {
 
-    @Override
-    public void response() {
-
-    }
 }

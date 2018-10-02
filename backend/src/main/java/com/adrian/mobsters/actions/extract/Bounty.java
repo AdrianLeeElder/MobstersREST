@@ -1,13 +1,13 @@
 package com.adrian.mobsters.actions.extract;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Bounty implements ExtractAction {
 
     @Override
-    public void extract(HtmlPage page, String username) {
+    public void extract(ChromeDriver page, String username) {
         //TODO:  Create MobsterService setBounty
 //    HtmlSpan bountySpan = (HtmlSpan) page.getElementById("bounty");
 //    elementText = bountySpan.asText();

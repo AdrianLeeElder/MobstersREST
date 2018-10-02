@@ -23,7 +23,7 @@ public class DailyActionsQueue {
     @Scope(value = "prototype")
     public Queue<AbstractAction> dailyActions() {
         String[] dailyActions = new String[]{
-                "Login", "Logout"
+                "LoginHtmlUnit", "Logout"
         };
 
         List<AbstractAction> actions = new ArrayList<>();
