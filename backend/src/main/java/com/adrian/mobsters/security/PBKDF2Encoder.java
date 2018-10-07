@@ -13,7 +13,7 @@ import java.util.Base64;
 @Component
 public class PBKDF2Encoder implements PasswordEncoder {
 
-    @Value("${springbootwebfluxjjwt.password.encoder.secret}")
+    @Value("${JJWT_ENCODER_SECRET}")
     private String secret;
 
     @Value("${springbootwebfluxjjwt.password.encoder.iteration}")
@@ -24,6 +24,7 @@ public class PBKDF2Encoder implements PasswordEncoder {
 
     /**
      * More info (https://www.owasp.org/index.php/Hashing_Java)
+     *
      * @param cs password
      * @return encoded password
      */

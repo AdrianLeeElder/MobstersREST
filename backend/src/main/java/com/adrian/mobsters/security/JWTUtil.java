@@ -17,7 +17,7 @@ public class JWTUtil implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Value("${springbootwebfluxjjwt.jjwt.secret}")
+    @Value("${JJWT_ENCODER_SECRET}")
     private String secret;
 
     @Value("${springbootwebfluxjjwt.jjwt.expiration}")
