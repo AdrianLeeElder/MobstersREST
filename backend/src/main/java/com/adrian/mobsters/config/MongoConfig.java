@@ -21,6 +21,8 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
     @Value("${spring.data.mongodb.uri}")
     private String uri;
+    @Value("${MOBSTERS_DATABASE}")
+    private String mobstersDatabase;
 
     @Override
     @Bean
@@ -30,7 +32,7 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        return "mobsters";
+        return mobstersDatabase;
     }
 
     @Bean
