@@ -26,18 +26,16 @@ public class DailyActionJobInitializerImplTest {
     @Mock
     private MobsterReactiveRepository mobsterReactiveRepository;
     @Mock
+    private SmsService smsService;
+    @Mock
     private ActionJobCreator actionJobCreator;
     @InjectMocks
     private DailyActionJobInitializerImpl dailyActionJobInitializer;
 
     @Test
     public void schedule() {
-        Mobster mobster1 = new Mobster("1", "john", "");
-        Mobster mobster2 = new Mobster("1", "bob", "");
-
         given(actionJobReactiveRepository.deleteAll()).willReturn(Mono.empty());
-        given(mobsterReactiveRepository.findAll()).willReturn(Flux.fromIterable(Arrays.asList(mobster1, mobster2)));
-        given(actionJobCreator.getNewDailyActionJobs("john|bob"))
+        given(actionJobCreator.getNewDailyJobForAllMobsters())
                 .willReturn(
                         Flux.fromIterable(
                                 Arrays.asList(
@@ -49,7 +47,6 @@ public class DailyActionJobInitializerImplTest {
         dailyActionJobInitializer.schedule();
 
         verify(actionJobReactiveRepository).deleteAll();
-        verify(mobsterReactiveRepository).findAll();
-        verify(actionJobCreator).getNewDailyActionJobs("john|bob");
+        verify(actionJobCreator).getNewDailyJobForAllMobsters();
     }
 }

@@ -118,7 +118,6 @@
 </template>
 
 <script>
-import { AXIOS } from "./http-common";
 import StatusIndicator from "./StatusIndicator";
 import ActionJobs from "./ActionJobs";
 
@@ -169,7 +168,7 @@ export default {
       console.log(this.editingAccount);
     },
     deleteAccount() {
-      AXIOS.delete("mobster/delete/" + this.deletingAccount.id).then(
+      this.$http.delete("mobster/delete/" + this.deletingAccount.id).then(
         response => {
           if (response.data.status === 200) {
             this.showDeletedSuccess = true;
@@ -183,9 +182,9 @@ export default {
     saveAccount() {
       console.log("save account");
       console.log(this.editingAccount);
-      AXIOS.post("mobster", this.editingAccount).then(response => {
+      this.$http.post("mobster", this.editingAccount).then(response => {
         // JSON responses are automatically parsed.
-        if (response.data.status === 200) {
+        if (response.status === 200) {
           this.showAccountEditedSuccessfully = true;
         } else {
           this.showAccountEditedFailure = false;
@@ -212,8 +211,8 @@ export default {
       });
     },
     setTempMobsters(refreshMobsters) {
-      AXIOS.get("mobster").then(response => {
-        // JSON responses are automatically parsed.
+      this.$http.get("mobster").then(response => {
+          // JSON responses are automatically parsed.
         this.tempMobsters = response.data;
 
         if (refreshMobsters) {

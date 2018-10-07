@@ -25,20 +25,20 @@ export default {
         return this.item;
       }
 
-      if ((this.item.actionJobs === null) || !this.item.actionJobs) {
-        return {}
+      if (this.item.actionJobs === null || !this.item.actionJobs) {
+        return {};
       }
 
-      var actionJobResult = {}
+      var actionJobResult = {};
 
       this.item.actionJobs.forEach(actionJob => {
         if (actionJob.daily) {
-            console.log(actionJob.complete)
-          actionJobResult = actionJob
+          console.log(actionJob.complete);
+          actionJobResult = actionJob;
         }
       });
 
-      return actionJobResult
+      return actionJobResult;
     }
   }
 };

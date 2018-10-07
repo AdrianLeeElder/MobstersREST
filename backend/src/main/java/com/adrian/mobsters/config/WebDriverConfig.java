@@ -30,6 +30,7 @@ public class WebDriverConfig {
 
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments(
+                "--headless",
                 "--disable-gpu",
                 "--window-size=1920,1200",
                 "--ignore-certificate-errors",

@@ -1,11 +1,9 @@
 package com.adrian.mobsters.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.reactive.config.WebFluxConfigurerComposite;
 
 @Configuration
 public class CorsGlobalConfiguration implements WebFluxConfigurer {
@@ -19,6 +17,7 @@ public class CorsGlobalConfiguration implements WebFluxConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
                 .allowedOrigins(String.format("http://%s:%d", allowedHost, corsAllowedPort))
-                .allowedMethods("*");
+                .allowedMethods("*")
+                .allowedHeaders("*");
     }
 }

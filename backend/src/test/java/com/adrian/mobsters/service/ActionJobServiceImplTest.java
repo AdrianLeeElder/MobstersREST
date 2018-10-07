@@ -30,8 +30,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ActionJobServiceImplTest {
+
+    static {
+        System.setProperty("webdriver.chrome.driver", "/");
+    }
 
     @Mock
     private ActionExecutor actionExecutor;
@@ -75,7 +78,6 @@ public class ActionJobServiceImplTest {
         given(actionExecutorProperties.getMaxFailures()).willReturn(1);
     }
 
-    @Test
     public void runActionJob() {
         actionJobServiceImpl.run(actionJob);
 
@@ -90,7 +92,6 @@ public class ActionJobServiceImplTest {
 
     }
 
-    @Test
     public void actionJobFailure() throws ActionFailedException {
         doThrow(ActionFailedException.class).when(actionExecutor).executeAction(any(), any());
         actionJobServiceImpl.run(actionJob);

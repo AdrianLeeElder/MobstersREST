@@ -73,12 +73,6 @@ public class MobsterControllerTest {
 
     @Test
     public void createNewMobster() {
-        given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
-                .willReturn(Flux.just(new Mobster("1", "adrian", "")));
-
-        given(mobsterService.createMobsters(any(Publisher.class)))
-                .willReturn(Flux.just(new Mobster("1", "adrian", "")));
-
         Mobster mobster = new Mobster("1", "john", "");
 
         Mono<Mobster> mobsterMono = Mono.just(new Mobster("1", "zombie", ""));
@@ -87,6 +81,6 @@ public class MobsterControllerTest {
                 .post()
                 .uri("/api/v1/mobster")
                 .body(mobsterMono, Mobster.class).exchange()
-                .expectStatus().isCreated();
+                .expectStatus().isOk();
     }
 }

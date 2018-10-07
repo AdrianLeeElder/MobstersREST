@@ -64,7 +64,7 @@ public class WithdrawPopup extends AbstractAction {
 //    getMobster().clearActions();
 //    getMobster().addQueuedAction("Logout");
 //    addMessage(
-//        "Bank minimum reached. (" + getMobster().getBuyPropertyMin() + "). Account finished.");
+//        "Bank minimum reached. (" + getMobster().getBuyPropertyMin() + "). User finished.");
 //    getMobster().setBuyPropertyMobsterComplete(true);
     }
 }

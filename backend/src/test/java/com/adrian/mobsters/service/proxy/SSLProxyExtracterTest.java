@@ -9,7 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SSLProxyExtracterTest {
@@ -19,10 +19,10 @@ public class SSLProxyExtracterTest {
 
     @Test
     public void getProxiesFromPageString() {
-        List<Proxy> actual = Collections.singletonList(new Proxy());
+        List<Proxy> expected = Collections.emptyList();
 
         String s = "<html />";
 
-        assertEquals(sslProxyExtracter.getProxiesFromPageString(s), actual);
+        assertEquals(expected, sslProxyExtracter.getProxiesFromPageString(s));
     }
 }

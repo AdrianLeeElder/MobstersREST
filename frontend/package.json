@@ -17,10 +17,13 @@
     "@material-ui/core": "^1.1.0",
     "@material-ui/icons": "^1.1.0",
     "axios": "^0.18.0",
+    "jwt-decode": "^2.2.0",
     "material-design-icons-iconfont": "^3.0.3",
     "vue": "^2.5.2",
+    "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.18"
+    "vuetify": "^1.0.18",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

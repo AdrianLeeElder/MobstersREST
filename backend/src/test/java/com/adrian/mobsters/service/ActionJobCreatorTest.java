@@ -4,7 +4,6 @@ import com.adrian.mobsters.domain.Action;
 import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.DailyAction;
 import com.adrian.mobsters.domain.Mobster;
-import com.adrian.mobsters.exception.DailyActionJobAlreadyExistForMobster;
 import com.adrian.mobsters.repository.ActionJobReactiveRepository;
 import com.adrian.mobsters.repository.DailyActionReactiveRepository;
 import com.adrian.mobsters.repository.MobsterReactiveRepository;
@@ -127,11 +126,14 @@ public class ActionJobCreatorTest {
     }
 
     private ActionJob newActionJob(String actionJob) {
-        return new ActionJob(mobster, Collections.singletonList(new Action(actionJob)), true, false);
+        ActionJob action = new ActionJob(mobster, Collections.singletonList(new Action(actionJob)), true, false);
+        action.setQueued(true);
+        return action;
     }
 
     private ActionJob emptyActionJobWithNoActions() {
-
-        return new ActionJob(mobster, Collections.emptyList(), true, false);
+        ActionJob actionJob = new ActionJob(mobster, Collections.emptyList(), true, false);
+        actionJob.setQueued(true);
+        return actionJob;
     }
 }

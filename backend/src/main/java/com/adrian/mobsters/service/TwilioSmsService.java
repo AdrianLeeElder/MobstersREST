@@ -1,6 +1,6 @@
 package com.adrian.mobsters.service;
 
-import com.adrian.mobsters.repository.AccountReactiveRepository;
+import com.adrian.mobsters.repository.UserReactiveRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -23,12 +23,12 @@ public class TwilioSmsService implements SmsService {
     @Value("${TWILIO_PHONE_NUMBER}")
     private String twilioPhoneNumber;
 
-    private AccountReactiveRepository accountReactiveRepository;
+    private UserReactiveRepository userReactiveRepository;
 
     @Override
     public void sendSms(String message) {
         List<PhoneNumber> phoneNumbers =
-                accountReactiveRepository
+                userReactiveRepository
                         .findAll()
                         .collectList()
                         .block()
