@@ -16,6 +16,10 @@ public class ActionExecutorProperties {
     @Max(30)
     private int threadCoreSize;
 
+    @Min(1)
+    @Max(30)
+    private int threadMaxPoolSize;
+
     @Min(300)
     @Max(1000)
     private int threadQueueCapacity;

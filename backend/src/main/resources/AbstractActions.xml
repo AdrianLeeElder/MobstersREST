@@ -37,7 +37,6 @@
         <name>Optimizer</name>
         <finishText>Successo!</finishText>
         <xPath>//*[@id="fancybox-content"]/div/button[1]</xPath>
-        <fancyBox>true</fancyBox>
     </action>
     <action>
         <name>Save Current Popup</name>
@@ -51,7 +50,7 @@
     <action>
         <name>Send All</name>
         <finishText>You have sent a</finishText>
-        <xPath>//a[text()='Send All']</xPath>
+        <xPath>//*[@id="tmob"]/div/div/div[1]/span/span/div[5]/a</xPath>
     </action>
     <action>
         <name>Collect All</name>

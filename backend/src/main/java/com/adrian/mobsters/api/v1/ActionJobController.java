@@ -27,6 +27,14 @@ public class ActionJobController {
                 .doOnNext(e -> actionJobService.run(e));
     }
 
+    @GetMapping("queueall")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Flux<ActionJob> queueAll() {
+        return actionJobCreator.getNewDailyJobForAllMobsters().doOnNext(e -> {
+            actionJobService.run(e);
+        });
+    }
+
     @PostMapping("new")
     @ResponseStatus(HttpStatus.CREATED)
     public Flux<ActionJob> addDailyJobs(@RequestBody MobsterUsernameWrapper mobsterUsernameWrapper) {
@@ -44,4 +52,5 @@ public class ActionJobController {
     public Flux<ActionJob> getActionJobsUsername(@PathVariable String username) {
         return actionJobReactiveRepository.findByMobsterUsername(username);
     }
+
 }

@@ -24,51 +24,29 @@ public class ActionExecutorImpl implements ActionExecutor {
     @Override
     public void executeAction(ChromeDriver chromeDriver, AbstractAction currentAction) throws ActionFailedException {
         currentAction.setChromeDriver(chromeDriver);
-        setAndExecuteCurrentAction(currentAction);
-
+        currentAction.setRunning(true);
+        currentAction.run();
         for (int failureCount = 0; failureCount < MAX_ATTEMPTS; failureCount++) {
-            if (failureCount > 0) {
-                humanBotService.randomSleep(1500 * (failureCount), 2300 * (failureCount));
-            }
+            try {
+                humanBotService.randomSleep(1000, 2000);
 
-            if (currentAction.isFinished()) {
-                finishAction(currentAction);
-                return;
-            }
+                if (currentAction.isFinished()) {
+                    currentAction.response();
 
-            log.debug("Action not successfully. Attempt number: {}", failureCount);
-            switch (failureCount) {
-                case 3:
-//                    refresh(chromeDriver);
-                case 7:
-                    log.debug("Attempting to execute action: {} again.", currentAction.getName());
-                    currentAction.run();
-                    break;
+                    log.trace("Action: {} finished.", currentAction.getName());
+                    return;
+                }
+
+            } catch (Exception e) {
+                log.error("Action failed: {}. Attempt number: {}, Message: {}",
+                        currentAction.getName(),
+                        failureCount,
+                        e.getMessage());
+
+                humanBotService.randomSleep(5000, 7000);
             }
         }
 
         throw new ActionFailedException(currentAction);
-    }
-
-    private void refresh(ChromeDriver chromeDriver) throws ActionFailedException {
-        Refresh refresh = (Refresh) actionService.getAction("Refresh");
-        refresh.setChromeDriver(chromeDriver);
-        refresh.run();
-        log.info("Attempting a page refresh.");
-    }
-
-    private void finishAction(AbstractAction currentAction) throws ActionFailedException {
-        currentAction.response();
-
-        log.debug("Action: {} finished.", currentAction.getName());
-    }
-
-    private void setAndExecuteCurrentAction(AbstractAction currentAction) throws ActionFailedException {
-        //currentAction = mobster.getActions().peek();
-        currentAction.setRunning(true);
-
-        log.debug("Executing action: {}", currentAction.getName());
-
-        currentAction.run();
     }
 }

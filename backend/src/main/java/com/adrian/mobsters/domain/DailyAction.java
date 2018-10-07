@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document
+@Document(collection = "dailyActions")
 @NoArgsConstructor
 public class DailyAction implements Comparable{
 

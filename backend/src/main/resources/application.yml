@@ -3,12 +3,6 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
----
-spring:
-  profiles: dev
-  data:
-    mongodb:
-      uri: mongodb://adrian:haxuk23D@localhost:27017/admin
 logging:
   level:
     org: OFF
@@ -16,7 +10,24 @@ logging:
       adrian:
         mobsters: TRACE
 ---
+spring:
+  profiles: dev
+  data:
+    mongodb:
+      uri: mongodb://adrian:haxuk23D@localhost:27017/admin
+# org.springframework.data.mongodb.core.mapping.event
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb: OFF
+    com:
+      adrian:
+        mobsters: TRACE
+---
 action-executor:
-  thread-core-size: 5
+  thread-core-size: 1
+  thread-max-pool-size: 1
   thread-queue-capacity: 1000
   max-failures: 3

@@ -9,8 +9,6 @@ import com.adrian.mobsters.exception.ActionFailedException;
 import com.adrian.mobsters.repository.ActionJobReactiveRepository;
 import com.adrian.mobsters.repository.ProxyReactiveRepository;
 import com.adrian.mobsters.service.proxy.ProxyService;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.WebClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -42,6 +40,10 @@ public class ActionJobServiceImpl implements ActionJobService {
     public void run(ActionJob actionJob) {
         try {
             runActionJob(actionJob);
+            actionJob.setRunning(false);
+            actionJob.setQueued(false);
+            actionJob.setComplete(true);
+            actionJobReactiveRepository.save(actionJob).subscribe();
         } catch (ActionFailedException e) {
             handleActionJobFailure(e, actionJob);
         }
@@ -88,7 +90,9 @@ public class ActionJobServiceImpl implements ActionJobService {
         try {
             proxy.setInUse(true);
             proxyReactiveRepository.save(proxy).subscribe();
-
+            actionJob.setQueued(false);
+            actionJob.setRunning(true);
+            actionJobReactiveRepository.save(actionJob).subscribe();
             processActionJobList(actionJob, chromeDriver);
 
             proxy.setSuccesses(proxy.getSuccesses() + 1);
@@ -103,6 +107,7 @@ public class ActionJobServiceImpl implements ActionJobService {
             proxyReactiveRepository.save(proxy).subscribe();
 
             log.info("Proxy was set to in use false.");
+            chromeDriver.close();
         }
     }
 

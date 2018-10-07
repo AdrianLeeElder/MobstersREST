@@ -21,5 +21,6 @@ public class ActionJob {
     private int failureCount;
     private boolean frozen;
     private boolean queued;
+    private boolean running;
     private boolean complete;
 }

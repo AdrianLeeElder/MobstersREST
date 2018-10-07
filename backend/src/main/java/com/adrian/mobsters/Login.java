@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Qualifier("login")
-@Profile("selenium")
 @Slf4j
 public class Login extends AbstractAction {
 

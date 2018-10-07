@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -66,10 +67,16 @@ public class ActionJobCreator {
                                         actionJobReactiveRepository.saveAll(
                                                 mobsters
                                                         .stream()
-                                                        .map(m -> new ActionJob(m,
-                                                                getActionListFromDailyActions(actions),
-                                                                true,
-                                                                false))
+                                                        .map(m -> {
+                                                            ActionJob actionJob = new ActionJob(m,
+                                                                    getActionListFromDailyActions(actions),
+                                                                    true,
+                                                                    false);
+
+                                                            actionJob.setQueued(true);
+
+                                                            return actionJob;
+                                                        })
                                                         .collect(toList())
                                         )
 
@@ -111,5 +118,16 @@ public class ActionJobCreator {
                 .stream()
                 .map(action -> new Action(action.getName()))
                 .collect(toList());
+    }
+
+    public Flux<ActionJob> getNewDailyJobForAllMobsters() {
+        return mobsterReactiveRepository
+                .findAll()
+                .collectList()
+                .flatMapMany(mobsterList ->
+                        getNewDailyActionJobs(mobsterList
+                                .stream()
+                                .map(Mobster::getUsername)
+                                .collect(Collectors.toList())));
     }
 }

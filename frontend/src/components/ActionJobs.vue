@@ -10,34 +10,14 @@
             </v-list>
         </v-card> -->
         <v-card class="ma-3">
-            <v-tabs v-model="activeActionJobTab">
-                <v-tab>
-                    Daily
-                </v-tab>
-                <!-- <v-tab>
-                    Buy Property
-                </v-tab> -->
-                <v-tab-item>
-                    <v-data-table :items="dailyActionJob.actionList" :headers="dailyActionJobHeaders" hide-actions>
-                        <template slot="items" slot-scope="props">
-                            <td>{{props.item.name}}</td>
-                            <td>
-                                <StatusIndicator :item="props.item"></StatusIndicator>
-                            </td>
-                        </template>
-                    </v-data-table>
-                </v-tab-item>
-                <!-- <v-tab-item>
-                    <v-data-table :items="buyPropertyActionJob.actionList" :headers="dailyActionJobHeaders">
-                        <template slot="items" slot-scope="props">
-                            <td>{{props.item.name}}</td>
-                            <td>
-                                <StatusIndicator :item="props.item" />
-                            </td>
-                        </template>
-                    </v-data-table>
-                </v-tab-item> -->
-            </v-tabs>
+            <v-data-table :items="dailyActionJob.actionList" :headers="dailyActionJobHeaders" hide-actions>
+                <template slot="items" slot-scope="props">
+                    <td>{{props.item.name}}</td>
+                    <td>
+                        <StatusIndicator :item="props.item"></StatusIndicator>
+                    </td>
+                </template>
+            </v-data-table>
         </v-card>
     </div>
 </template>

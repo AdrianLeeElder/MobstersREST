@@ -1,61 +1,82 @@
 package com.adrian.mobsters.api.v1;
 
+import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
+import com.adrian.mobsters.repository.ActionJobReactiveRepository;
 import com.adrian.mobsters.repository.MobsterReactiveRepository;
 import com.adrian.mobsters.service.MobsterService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.reactivestreams.Publisher;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MobsterControllerTest {
 
     @Mock
     private MobsterService mobsterService;
     @Mock
     private MobsterReactiveRepository mobsterReactiveRepository;
-
+    @Mock
+    private ActionJobReactiveRepository actionJobReactiveRepository;
+    @InjectMocks
+    private MobsterController mobsterController;
     private WebTestClient webTestClient;
+    private List<ActionJob> actionJobList;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        webTestClient = WebTestClient.bindToController(new MobsterController(mobsterReactiveRepository, mobsterService))
+        webTestClient = WebTestClient
+                .bindToController(mobsterController)
                 .build();
     }
 
     @Test
     public void getAllMobsters() {
-        BDDMockito.given(mobsterReactiveRepository.findAll())
-                .willReturn(Flux.just(new Mobster("1", "Zombie", "")));
+        actionJobList = Collections.singletonList(new ActionJob(null,null, true, false));
+        Mobster mobster = new Mobster("1", "Zombie", "");
 
-        Mobster mobster = new Mobster("1", "johnny", "h");
+        given(mobsterReactiveRepository.findAll()).willReturn(Flux.just(mobster));
 
-        Mobster mobster2 = new Mobster("2", "Adrian", "h");
-
-        when(mobsterService.getMobsters()).thenReturn(Flux.fromArray(new Mobster[]{mobster, mobster2}));
+        given(actionJobReactiveRepository.findByMobsterUsername("Zombie"))
+                .willReturn(Flux.fromIterable(actionJobList));
 
         webTestClient.get().uri("/api/v1/mobster")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(Mobster.class)
-                .hasSize(2);
+                .hasSize(1)
+                .consumeWith(response -> {
+                    Objects.requireNonNull(response);
+
+                    for (Mobster m : response.getResponseBody()) {
+                        assertTrue(m.getActionJobs() != null && !m.getActionJobs().isEmpty());
+                    }
+                });
     }
 
     @Test
     public void createNewMobster() {
-        BDDMockito.given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
+        given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
                 .willReturn(Flux.just(new Mobster("1", "adrian", "")));
 
-        BDDMockito.given(mobsterService.createMobsters(any(Publisher.class)))
+        given(mobsterService.createMobsters(any(Publisher.class)))
                 .willReturn(Flux.just(new Mobster("1", "adrian", "")));
 
         Mobster mobster = new Mobster("1", "john", "");

@@ -5,11 +5,14 @@ import com.adrian.mobsters.Login;
 import com.adrian.mobsters.exception.ActionFailedException;
 import com.adrian.mobsters.service.ActionExecutor;
 import com.adrian.mobsters.service.ActionService;
+import com.adrian.mobsters.service.HumanBotService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -25,6 +28,8 @@ import java.util.regex.Pattern;
 @Slf4j
 @Data
 public abstract class AbstractAction {
+
+    private static final int MAX_RUN_ATTEMPTS = 10;
 
     @Autowired
     private ActionExecutor actionExecutor;
@@ -69,17 +74,36 @@ public abstract class AbstractAction {
     private boolean fancyBox;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private HumanBotService humanBotService;
 
     public String getName() {
         return name;
     }
 
-    public void run() throws ActionFailedException {
-        log.trace("Running action {}", getName());
-        WebElement webElement = getChromeDriver().findElement(By.xpath(getXPath()));
+    public void run() {
+        attemptAction(() -> {
+            log.trace("Running action: {} with XPath: {}", getName(), getXPath());
+            WebElement webElement = new WebDriverWait(getChromeDriver(), 10)
+                    .until(ExpectedConditions.elementToBeClickable(
+                            getChromeDriver().findElement(By.xpath(
+                                    getXPath()
+                            ))
+                    ));
 
-        if (webElement.isDisplayed()) {
             webElement.click();
+        });
+    }
+
+    private void attemptAction(Runnable r) {
+        for (int attempts = 0; attempts < MAX_RUN_ATTEMPTS; attempts++) {
+            try {
+                r.run();
+                break;
+            } catch (Exception ex) {
+                humanBotService.randomSleep(1000, 2000);
+                log.error("Unable to run action (attempt #): {}, XPath: {}", attempts, getName(), getXPath());
+            }
         }
     }
 
@@ -129,11 +153,9 @@ public abstract class AbstractAction {
 
     public void switchToEmbeddedIframe() {
         if (this instanceof Login) {
-            List<WebElement> webElements = getChromeDriver().findElements(By.xpath("//*[@id=\"mprgameframe\"]"));
-
-            if (webElements.size() > 0) {
-                getChromeDriver().switchTo().frame(webElements.get(0));
-            }
+            attemptAction(() -> {
+                getChromeDriver().switchTo().frame(0);
+            });
         }
     }
 

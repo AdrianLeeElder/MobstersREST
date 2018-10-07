@@ -47,7 +47,7 @@ public class ActionJobCreatorTest {
     @Before
     public void setUp() {
         mobster = new Mobster("1", "zombie", "");
-        dailyActionList = Collections.singletonList(new DailyAction("LoginHtmlUnit"));
+        dailyActionList = Collections.singletonList(new DailyAction("Login"));
 
         given(mobsterReactiveRepository.findByUsernameRegex("zombie")).willReturn(Flux.just(mobster));
         given(dailyActionReactiveRepository.findAll()).willReturn(Flux.fromIterable(dailyActionList));
@@ -65,7 +65,7 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("LoginHtmlUnit");
+        ActionJob expected = newActionJob("Login");
 
         assertEquals(Collections.singletonList(expected), actual);
     }
@@ -98,7 +98,7 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("LoginHtmlUnit");
+        ActionJob expected = newActionJob("Login");
 
         assertEquals(Collections.singletonList(expected), actual);
     }
@@ -110,7 +110,18 @@ public class ActionJobCreatorTest {
                 .collectList()
                 .block();
 
-        ActionJob expected = newActionJob("LoginHtmlUnit");
+        ActionJob expected = newActionJob("Login");
+
+        assertEquals(Collections.singletonList(expected), actual);
+    }
+
+    @Test
+    public void createActionJobForAllMobsters() {
+        given(mobsterReactiveRepository.findAll()).willReturn(Flux.just(mobster));
+
+        List<ActionJob> actual = actionJobCreator.getNewDailyJobForAllMobsters().collectList().block();
+
+        ActionJob expected = newActionJob("Login");
 
         assertEquals(Collections.singletonList(expected), actual);
     }

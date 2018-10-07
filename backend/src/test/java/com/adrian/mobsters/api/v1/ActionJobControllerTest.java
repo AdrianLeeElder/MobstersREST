@@ -70,12 +70,12 @@ public class ActionJobControllerTest {
                 .uri(API_BASE + "/new/zombie")
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(ActionJob.class)
+                .expectBodyList(ActionJob.class)
                 .consumeWith(response -> {
-                    ActionJob actionJob = response.getResponseBody();
+                    List<ActionJob> actionJobList = response.getResponseBody();
 
-                    assertNotNull(actionJob);
-                    assertEquals(actionJob, this.actionJob);
+                    assertNotNull(actionJobList);
+                    assertEquals(Collections.singletonList(this.actionJob), actionJobList);
                 });
     }
 
@@ -94,5 +94,24 @@ public class ActionJobControllerTest {
                     assertNotNull(actionJob);
                     assertEquals(this.actionJob, actionJob);
                 });
+    }
+
+    @Test
+    public void queueAll() {
+        given(actionJobCreator.getNewDailyJobForAllMobsters()).willReturn(Flux.just(actionJob));
+
+        webTestClient
+                .get()
+                .uri(API_BASE + "/queueall")
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBodyList(ActionJob.class)
+                .consumeWith(response -> {
+                    List<ActionJob> actionJobList = response.getResponseBody();
+
+                    assertNotNull(actionJobList);
+                    assertEquals(Collections.singletonList(this.actionJob), actionJobList);
+                });
+
     }
 }

@@ -33,8 +33,8 @@ public class WebDriverConfig {
                 "--disable-gpu",
                 "--window-size=1920,1200",
                 "--ignore-certificate-errors",
-                "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
-
+                "--disable-notifications",
+                "--start-maximized");
         desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 
         log.info("Starting new chrome driver with new proxy: {}", availableProxy);

@@ -23,11 +23,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-content>
-      <v-container fluid>
-        <v-card>
-          <accounts-dashboard></accounts-dashboard>
-        </v-card>
-      </v-container>
+      <accounts-dashboard></accounts-dashboard>
     </v-content>
   </v-app>
 </template>

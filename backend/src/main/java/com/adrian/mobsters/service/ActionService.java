@@ -56,6 +56,7 @@ public class ActionService {
      * /resources/.
      */
     public AbstractAction getAction(String actionName) {
+        log.debug("Attempting to retrieve new action: " + actionName);
         AbstractAction abstractAction = actionFactoryService.getAbstractAction(actionName);
         XPathExpression xPathExpression = null;
 
