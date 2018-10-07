@@ -13,7 +13,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-@Component
 public class SSLCertificateImporter implements CommandLineRunner {
 
     private static final String PASSPHRASE = "changeit";
