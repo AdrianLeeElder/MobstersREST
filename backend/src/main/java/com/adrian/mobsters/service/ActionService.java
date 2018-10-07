@@ -44,7 +44,7 @@ public class ActionService {
         try {
             documentBuilder = builderFactory.newDocumentBuilder();
             document = documentBuilder
-                    .parse(ActionService.class.getResource("/AbstractActions.xml").getFile());
+                    .parse(ActionService.class.getResourceAsStream("/AbstractActions.xml"));
             document.getDocumentElement().normalize();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error("Error importing action configuration", e);
