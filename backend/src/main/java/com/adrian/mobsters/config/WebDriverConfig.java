@@ -39,7 +39,8 @@ public class WebDriverConfig {
                 "--window-size=1920,1200",
                 "--ignore-certificate-errors",
                 "--disable-notifications",
-                "--start-maximized");
+                "--start-maximized",
+                "--no-sandbox");
         desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 
         log.info("Starting new chrome driver with new proxy: {}", availableProxy);
