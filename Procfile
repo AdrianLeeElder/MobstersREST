@@ -1,1 +1,1 @@
-web: java -Dspring.profiles.active=prod -Dserver.port=$PORT -Dwebdriver.chrome.driver=$GOOGLE_CHROME_SHIM -jar backend/target/backend-0.0.1-SNAPSHOT.jar
+web: java -Dspring.profiles.active=prod -Dserver.port=$PORT -jar backend/target/backend-0.0.1-SNAPSHOT.jar

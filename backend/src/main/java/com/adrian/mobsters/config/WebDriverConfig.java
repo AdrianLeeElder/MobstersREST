@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Scope;
 @Slf4j
 public class WebDriverConfig {
 
+    static {
+        System.setProperty("webdriver.chrome.driver", System.getenv("GOOGLE_CHROME_SHIM"));
+    }
+    
     @Autowired
     private ProxyService proxyService;
 
