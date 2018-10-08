@@ -1,1 +1,1 @@
-web: java -Dspring.profiles.active=prod -Dserver.port=$PORT -jar backend/target/backend-0.0.1-SNAPSHOT.jar
+web: java -Dspring.profiles.active=prod -Dserver.port=$PORT --CORS_ALLOWED_PORT=$PORT -jar backend/target/backend-0.0.1-SNAPSHOT.jar
