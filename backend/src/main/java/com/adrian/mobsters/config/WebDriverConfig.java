@@ -15,9 +15,9 @@ import org.springframework.context.annotation.Scope;
 public class WebDriverConfig {
 
     static {
-        System.setProperty("webdriver.chrome.driver", System.getenv("GOOGLE_CHROME_SHIM"));
+        System.setProperty("webdriver.chrome.driver", System.getenv("GOOGLE_CHROME_BIN"));
     }
-    
+
     @Autowired
     private ProxyService proxyService;
 
