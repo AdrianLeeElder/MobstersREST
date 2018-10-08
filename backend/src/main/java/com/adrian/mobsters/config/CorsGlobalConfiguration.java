@@ -10,7 +10,7 @@ public class CorsGlobalConfiguration implements WebFluxConfigurer {
 
     @Value("${CORS_ALLOWED_HOST:localhost}")
     private String allowedHost;
-    @Value("${PORT:8081}")
+    @Value("${PORT:8080}")
     private int corsAllowedPort;
 
     @Override
