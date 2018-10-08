@@ -10,6 +10,6 @@ public class DailyActionJobScheduler {
     private DailyActionJobInitializer dailyActionJobInitializer;
     @Scheduled(cron = "0 0 1 * * ?")
     public void runDaily() {
-
+        dailyActionJobInitializer.schedule();
     }
 }

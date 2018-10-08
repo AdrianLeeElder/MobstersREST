@@ -5,10 +5,10 @@ import com.adrian.mobsters.security.AuthRequest;
 import com.adrian.mobsters.security.AuthResponse;
 import com.adrian.mobsters.security.JWTUtil;
 import com.adrian.mobsters.security.PBKDF2Encoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthenticationController {
 
     @Autowired
@@ -31,6 +32,7 @@ public class AuthenticationController {
     @PostMapping
     public Mono<ResponseEntity<AuthResponse>> auth(@RequestBody AuthRequest ar) {
         return userReactiveRepository.findByUsername(ar.getUsername()).map((userDetails) -> {
+            log.info("Attempting password check for: {}", passwordEncoder.encode(ar.getPassword()));
             if (passwordEncoder.encode(ar.getPassword()).equals(userDetails.getPassword())) {
                 return ResponseEntity.ok(new AuthResponse(jwtUtil.generateToken(userDetails)));
             } else {
