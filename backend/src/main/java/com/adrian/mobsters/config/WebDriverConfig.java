@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Scope;
 public class WebDriverConfig {
 
     static {
-        System.setProperty("webdriver.chrome.driver", System.getenv("GOOGLE_CHROME_BIN"));
+        System.setProperty("webdriver.chrome.driver", System.getenv("CHROMEDRIVER_PATH"));
     }
 
     @Autowired
