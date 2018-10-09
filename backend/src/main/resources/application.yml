@@ -31,3 +31,6 @@ logging:
       springframework:
         data:
           mongodb: OFF
+    com:
+      adrian:
+        mobsters: TRACE

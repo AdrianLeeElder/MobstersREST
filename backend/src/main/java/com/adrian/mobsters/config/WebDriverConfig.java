@@ -36,7 +36,6 @@ public class WebDriverConfig {
         chromeOptions.addArguments(
                 "--headless",
                 "--disable-gpu",
-                "--window-size=1920,1200",
                 "--ignore-certificate-errors",
                 "--disable-notifications",
                 "--start-maximized",
