@@ -9,12 +9,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://adrian:haxuk23D@localhost:27017/admin
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          mongodb: OFF
     com:
       adrian:
         mobsters: TRACE
@@ -31,3 +25,9 @@ springbootwebfluxjjwt:
     encoder:
       iteration: 33
       keylength: 256
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb: OFF
