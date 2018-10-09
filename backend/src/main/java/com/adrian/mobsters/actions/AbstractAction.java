@@ -118,7 +118,6 @@ public abstract class AbstractAction {
     }
 
     private void closeFancyBox() throws ActionFailedException {
-        log.trace("Attempting to close fancy box.");
         FancyBox fancyBox = (FancyBox) actionService.getAction("Fancy Box");
         actionExecutor.executeAction(getChromeDriver(), fancyBox);
     }
@@ -129,15 +128,7 @@ public abstract class AbstractAction {
     public boolean isFinished() {
         log.trace("Polling finished status for {}", getName());
         switchToEmbeddedIframe();
-        if (this instanceof Login && getChromeDriver().findElement(By.xpath("//div[@id='fancybox-overlay']")).isDisplayed()) {
-            attemptAction(() -> {
-                try {
-                    closeFancyBox();
-                } catch (ActionFailedException e) {
-                    log.error("Could not close login fancybox");
-                }
-            });
-        }
+
         String content = getChromeDriver().getPageSource();
         if (isFinished) {
             setFinished(true);

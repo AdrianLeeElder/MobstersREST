@@ -70,6 +70,7 @@
     <action>
         <name>Deposit</name>
         <finishText>You have successfully deposited</finishText>
+        <finishText>You don't have any cash to deposit</finishText>
         <xPath>//*[@id="bank"]/div[2]/button</xPath>
     </action>
     <action>
@@ -95,6 +96,7 @@
     <action>
         <name>Login</name>
         <finishText>Welcome to MPR</finishText>
+        <fancyBox>true</fancyBox>
     </action>
     <action>
         <name>My Mobster</name>

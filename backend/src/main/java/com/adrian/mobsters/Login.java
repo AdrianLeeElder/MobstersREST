@@ -28,10 +28,6 @@ public class Login extends AbstractAction {
         }
     }
 
-    @Override
-    public void response() {
-    }
-
     private String getLoggedInPage(String username, String password) {
         getChromeDriver()
                 .findElement(By.xpath(divisionPath + "//input[@placeholder='Type Username Here']"))

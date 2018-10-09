@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ActionExecutorImpl implements ActionExecutor {
 
-    private static final int MAX_ATTEMPTS = 12;
+    private static final int MAX_ATTEMPTS = 5;
 
     private final HumanBotService humanBotService;
     private final ActionService actionService;
