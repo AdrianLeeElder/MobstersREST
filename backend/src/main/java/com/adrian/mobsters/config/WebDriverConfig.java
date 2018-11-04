@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+
 @Configuration
 @Slf4j
 public class WebDriverConfig {
@@ -31,7 +33,6 @@ public class WebDriverConfig {
 
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
         desiredCapabilities.setCapability("proxy", proxy);
-
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments(
                 "--headless",
@@ -39,7 +40,10 @@ public class WebDriverConfig {
                 "--ignore-certificate-errors",
                 "--disable-notifications",
                 "--start-maximized",
-                "--no-sandbox");
+                "--no-sandbox",
+                "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36",
+                "--remote-debugging-port=9222",
+                "--lang=en");
         desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 
         log.info("Starting new chrome driver with new proxy: {}", availableProxy);

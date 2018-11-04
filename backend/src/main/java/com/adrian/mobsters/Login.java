@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,16 +41,40 @@ public class Login extends AbstractAction {
     }
 
     private void login() {
+        //this will log you out
         this.getChromeDriver().get("https://app.playersrevenge.com/front.php");
 
         String username = getMobsterUsername();
 
-        setSourcePage(
-                getLoggedInPage(username,
-                        mobsterService.retrieveMobsterPassword(username))
-        );
+        getLoggedInPage(username, mobsterService.retrieveMobsterPassword(username));
     }
 
+    @Override
+    public boolean isFinished() {
+        if (getChromeDriver().getPageSource().contains("<iframe id=\"mprgameframe\"")) {
+            switchToEmbeddedIframe();
+        }
+
+        if (super.isFinished()) {
+            return true;
+        }
+
+
+        return false;
+    }
+
+    private void switchToEmbeddedIframe() {
+        try {
+            getChromeDriver().switchTo().frame("mprgameframe");
+        } catch (Exception ex) {
+            log.error("Unable to switch to secureframe, loading main iframe page.");
+            loadIframePage();
+        }
+    }
+
+    private void loadIframePage() {
+        getChromeDriver().get("https://app.playersrevenge.com/iframe.php");
+    }
 
     @Override
     public void printAction() {

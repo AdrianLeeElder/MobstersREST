@@ -95,7 +95,7 @@ public abstract class AbstractAction {
         });
     }
 
-    private void attemptAction(Runnable r) {
+    public void attemptAction(Runnable r) {
         for (int attempts = 0; attempts < MAX_RUN_ATTEMPTS; attempts++) {
             try {
                 r.run();
@@ -127,7 +127,6 @@ public abstract class AbstractAction {
      */
     public boolean isFinished() {
         log.trace("Polling finished status for {}", getName());
-        switchToEmbeddedIframe();
 
         String content = getChromeDriver().getPageSource();
         if (isFinished) {
@@ -151,13 +150,7 @@ public abstract class AbstractAction {
         return false;
     }
 
-    public void switchToEmbeddedIframe() {
-        if (this instanceof Login) {
-            attemptAction(() -> {
-                getChromeDriver().switchTo().frame(0);
-            });
-        }
-    }
+
 
     /**
      * Describe how this action will be displayed (usually in a log)
