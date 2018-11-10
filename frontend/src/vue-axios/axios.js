@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const MOBSTERS_API_URL = 'http://localhost:8080/api/v1'
+const MOBSTERS_API_URL = 'api/v1'
 
 var mobstersApi = axios.create({
   baseURL: MOBSTERS_API_URL,
