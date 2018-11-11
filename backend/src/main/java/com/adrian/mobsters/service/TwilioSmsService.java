@@ -1,5 +1,6 @@
 package com.adrian.mobsters.service;
 
+import com.adrian.mobsters.domain.User;
 import com.adrian.mobsters.repository.UserReactiveRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -25,21 +26,28 @@ public class TwilioSmsService implements SmsService {
 
     private UserReactiveRepository userReactiveRepository;
 
+    public TwilioSmsService(UserReactiveRepository userReactiveRepository) {
+        this.userReactiveRepository = userReactiveRepository;
+    }
+
     @Override
     public void sendSms(String message) {
-        List<PhoneNumber> phoneNumbers =
+        List<User> users =
                 userReactiveRepository
                         .findAll()
                         .collectList()
-                        .block()
-                        .stream()
-                        .map(account -> new PhoneNumber(account.getPhoneNumber()))
-                        .collect(toList());
+                        .block();
 
-        Twilio.init(twilioAccountSid, twilioAuthToken);
+        if (users != null) {
+            List<PhoneNumber> phoneNumbers = users.stream()
+                    .map(account -> new PhoneNumber(account.getPhoneNumber()))
+                    .collect(toList());
 
-        for (PhoneNumber phoneNumber : phoneNumbers) {
-            Message.creator(phoneNumber, new PhoneNumber(twilioPhoneNumber), message).create();
+            Twilio.init(twilioAccountSid, twilioAuthToken);
+
+            for (PhoneNumber phoneNumber : phoneNumbers) {
+                Message.creator(phoneNumber, new PhoneNumber(twilioPhoneNumber), message).create();
+            }
         }
     }
 }
