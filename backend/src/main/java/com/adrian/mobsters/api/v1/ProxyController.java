@@ -2,29 +2,28 @@ package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.Proxy;
 import com.adrian.mobsters.domain.ProxyContainer;
-import com.adrian.mobsters.repository.ProxyReactiveRepository;
+import com.adrian.mobsters.repository.ProxyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/proxy")
 @RequiredArgsConstructor
 public class ProxyController {
-
-    private final ProxyReactiveRepository proxyReactiveRepository;
+    private final ProxyRepository proxyRepository;
 
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Proxy> addProxy(@RequestBody Proxy proxy) {
-        return proxyReactiveRepository.save(proxy);
+    public Proxy addProxy(@RequestBody Proxy proxy) {
+        return proxyRepository.save(proxy);
     }
 
-    @PostMapping("addlist")
+    @PostMapping("add-list")
     @ResponseStatus(HttpStatus.CREATED)
-    public Flux<Proxy> addProxyList(@RequestBody ProxyContainer proxyContainer) {
-        return proxyReactiveRepository.saveAll(proxyContainer.getProxies());
+    public List<Proxy> addProxyList(@RequestBody ProxyContainer proxyContainer) {
+        return proxyRepository.saveAll(proxyContainer.getProxies());
     }
 }

@@ -2,7 +2,6 @@ package com.adrian.mobsters.service.proxy;
 
 import com.adrian.mobsters.domain.Proxy;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
 
 /**

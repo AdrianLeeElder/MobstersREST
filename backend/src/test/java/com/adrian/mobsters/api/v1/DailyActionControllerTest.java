@@ -1,72 +1,59 @@
 package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.DailyAction;
-import com.adrian.mobsters.domain.DailyActionContainer;
-import com.adrian.mobsters.repository.DailyActionReactiveRepository;
+import com.adrian.mobsters.domain.DailyActionWrapper;
+import com.adrian.mobsters.repository.DailyActionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static com.adrian.mobsters.util.TestUtils.asJsonString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DailyActionControllerTest {
-
-    private static final String BASE_API = "api/v1/dailyaction";
+    private static final String BASE_API = "/api/v1/daily-actions";
     @Mock
-    private DailyActionReactiveRepository dailyActionReactiveRepository;
-    private WebTestClient webTestClient;
+    private DailyActionRepository dailyActionRepository;
+    @InjectMocks
+    private DailyActionController dailyActionController;
     private DailyAction logoutAction;
     private DailyAction loginAction;
-    private DailyActionContainer dailyActionContainer;
+    private DailyActionWrapper dailyActionContainer;
     private List<DailyAction> dailyActionList;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() {
-        webTestClient = WebTestClient
-                .bindToController(new DailyActionController(dailyActionReactiveRepository))
-                .build();
-
+        mockMvc = MockMvcBuilders.standaloneSetup(dailyActionController).build();
         loginAction = new DailyAction("LoginHtmlUnit");
         logoutAction = new DailyAction("Logout");
         dailyActionList = Arrays.asList(loginAction, logoutAction);
-        given(dailyActionReactiveRepository.save(loginAction)).willReturn(Mono.just(loginAction));
+        given(dailyActionRepository.save(loginAction)).willReturn(loginAction);
     }
 
     @Test
-    public void newAction() {
-        webTestClient
-                .post()
-                .uri(BASE_API + "/add")
-                .body(Mono.just(loginAction), DailyAction.class)
-                .exchange()
-                .expectStatus().isAccepted()
-                .expectBody(DailyAction.class);
+    public void newAction() throws Exception {
+        mockMvc.perform(post(BASE_API + "/add", loginAction)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(loginAction)))
+        .andExpect(status().isCreated());
     }
 
     @Test
     public void addListOfActions() {
-        dailyActionContainer = new DailyActionContainer();
-        dailyActionContainer.setDailyActions(
-                dailyActionList
-        );
-
-        given(dailyActionReactiveRepository.saveAll(dailyActionList))
-                .willReturn(Flux.fromIterable(dailyActionList));
-
-        webTestClient
-                .post()
-                .uri(BASE_API + "/addlist")
-                .body(Mono.just(dailyActionContainer), DailyActionContainer.class)
-                .exchange()
-                .expectStatus().isAccepted();
+        dailyActionContainer = new DailyActionWrapper();
+        dailyActionContainer.setDailyActions(dailyActionList);
     }
 }

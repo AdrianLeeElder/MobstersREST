@@ -6,8 +6,8 @@ import com.adrian.mobsters.domain.Action;
 import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Proxy;
 import com.adrian.mobsters.exception.ActionFailedException;
-import com.adrian.mobsters.repository.ActionJobReactiveRepository;
-import com.adrian.mobsters.repository.ProxyReactiveRepository;
+import com.adrian.mobsters.repository.ActionJobRepository;
+import com.adrian.mobsters.repository.ProxyRepository;
 import com.adrian.mobsters.service.proxy.ProxyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +26,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class ActionJobServiceImpl implements ActionJobService {
-
     private final ActionExecutor actionExecutor;
     private final ActionService actionService;
-    private final ActionJobReactiveRepository actionJobReactiveRepository;
+    private final ActionJobRepository actionJobRepository;
     private final ActionExecutorProperties actionExecutorProperties;
     private final ApplicationContext applicationContext;
     private final ProxyService proxyService;
-    private final ProxyReactiveRepository proxyReactiveRepository;
+    private final ProxyRepository proxyRepository;
 
     @Override
     @Async
@@ -43,7 +42,7 @@ public class ActionJobServiceImpl implements ActionJobService {
             actionJob.setRunning(false);
             actionJob.setQueued(false);
             actionJob.setComplete(true);
-            actionJobReactiveRepository.save(actionJob).subscribe();
+            actionJobRepository.save(actionJob);
         } catch (ActionFailedException e) {
             handleActionJobFailure(e, actionJob);
         }
@@ -65,7 +64,7 @@ public class ActionJobServiceImpl implements ActionJobService {
         }
 
         actionJob.setQueued(false);
-        actionJobReactiveRepository.save(actionJob).subscribe();
+        actionJobRepository.save(actionJob);
 
         requeueNonFrozenActionJob(actionJob);
     }
@@ -84,27 +83,27 @@ public class ActionJobServiceImpl implements ActionJobService {
     private void executeActions(ActionJob actionJob) throws ActionFailedException {
         Proxy proxy = proxyService.getAvailableProxy();
         proxy.setAttempts(proxy.getAttempts() + 1);
-        proxyReactiveRepository.save(proxy).subscribe();
+        proxyRepository.save(proxy);
         ChromeDriver chromeDriver = getWebClient();
 
         try {
             proxy.setInUse(true);
-            proxyReactiveRepository.save(proxy).subscribe();
+            proxyRepository.save(proxy);
             actionJob.setQueued(false);
             actionJob.setRunning(true);
-            actionJobReactiveRepository.save(actionJob).subscribe();
+            actionJobRepository.save(actionJob);
             processActionJobList(actionJob, chromeDriver);
 
             proxy.setSuccesses(proxy.getSuccesses() + 1);
-            proxyReactiveRepository.save(proxy).subscribe();
+            proxyRepository.save(proxy);
 
             actionJob.setComplete(true);
-            actionJobReactiveRepository.save(actionJob).subscribe();
+            actionJobRepository.save(actionJob);
         } catch (Exception ex) {
             log.error("Uncaught exception {}", ex);
         } finally {
             proxy.setInUse(false);
-            proxyReactiveRepository.save(proxy).subscribe();
+            proxyRepository.save(proxy);
 
             log.info("Proxy was set to in use false.");
             chromeDriver.close();
@@ -117,7 +116,7 @@ public class ActionJobServiceImpl implements ActionJobService {
             actionExecutor.executeAction(chromeDriver, getAbstractAction(actionJob, action));
             action.setRunning(false);
             action.setComplete(true);
-            actionJobReactiveRepository.save(actionJob).block();
+            actionJobRepository.save(actionJob);
         }
     }
 
@@ -136,6 +135,6 @@ public class ActionJobServiceImpl implements ActionJobService {
 
     private void runAction(ActionJob actionJob, Action action) {
         action.setRunning(true);
-        actionJobReactiveRepository.save(actionJob).block();
+        actionJobRepository.save(actionJob);
     }
 }

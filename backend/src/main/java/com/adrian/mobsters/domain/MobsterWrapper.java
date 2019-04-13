@@ -5,7 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class DailyActionContainer {
-
-    private List<DailyAction> dailyActions;
+public class MobsterWrapper {
+    private final List<Mobster> mobsters;
 }

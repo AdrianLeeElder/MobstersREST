@@ -7,19 +7,15 @@ import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.domain.Proxy;
 import com.adrian.mobsters.exception.ActionFailedException;
-import com.adrian.mobsters.repository.ActionJobReactiveRepository;
-import com.adrian.mobsters.repository.ProxyReactiveRepository;
+import com.adrian.mobsters.repository.ActionJobRepository;
+import com.adrian.mobsters.repository.ProxyRepository;
 import com.adrian.mobsters.service.proxy.ProxyService;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
-import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
 public class ActionJobServiceImplTest {
-
     static {
         System.setProperty("webdriver.chrome.driver", "/");
     }
@@ -43,7 +38,7 @@ public class ActionJobServiceImplTest {
     @Mock
     private ActionService actionService;
     @Mock
-    private ActionJobReactiveRepository actionJobReactiveRepository;
+    private ActionJobRepository actionJobRepository;
     @Mock
     private ApplicationContext applicationContext;
     @Mock
@@ -53,7 +48,7 @@ public class ActionJobServiceImplTest {
     @Mock
     private WebClientOptions webClientOptions;
     @Mock
-    private ProxyReactiveRepository proxyReactiveRepository;
+    private ProxyRepository proxyRepository;
     @InjectMocks
     private ActionJobServiceImpl actionJobServiceImpl;
     private ActionJob actionJob;
@@ -62,7 +57,7 @@ public class ActionJobServiceImplTest {
     private Login loginHtmlUnit;
 
     @Before
-    public void setUp() throws Exception, ActionFailedException {
+    public void setUp() {
         proxy = new Proxy("localhost", 2323);
         Mobster mobster = new Mobster("1", "BOB", "");
         actionList = Collections.singletonList(new Action("LoginHtmlUnit"));
@@ -73,8 +68,8 @@ public class ActionJobServiceImplTest {
         given(proxyService.getAvailableProxy()).willReturn(proxy);
         given(applicationContext.getBean("webClient")).willReturn(webClient);
         given(actionService.getAction(anyString())).willReturn(loginHtmlUnit);
-        given(actionJobReactiveRepository.save(actionJob)).willReturn(Mono.just(actionJob));
-        given(proxyReactiveRepository.save(proxy)).willReturn(Mono.just(proxy));
+        given(actionJobRepository.save(actionJob)).willReturn(actionJob);
+        given(proxyRepository.save(proxy)).willReturn(proxy);
         given(actionExecutorProperties.getMaxFailures()).willReturn(1);
     }
 

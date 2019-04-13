@@ -1,27 +1,28 @@
 package com.adrian.mobsters.service;
 
 import com.adrian.mobsters.domain.Mobster;
-import com.adrian.mobsters.repository.MobsterReactiveRepository;
+import com.adrian.mobsters.domain.MobsterWrapper;
+import com.adrian.mobsters.repository.MobsterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MobsterServiceImplTest {
 
     @Mock
-    private MobsterReactiveRepository mobsterReactiveRepository;
+    private MobsterRepository mobsterRepository;
     @InjectMocks
     private MobsterServiceImpl mobsterServiceImpl;
 
@@ -30,7 +31,7 @@ public class MobsterServiceImplTest {
     @Test
     public void readUserPassword() {
         Mobster mobster = new Mobster("1", "zombie", "hax");
-        given(mobsterReactiveRepository.findByUsername("zombie")).willReturn(Mono.just(mobster));
+        given(mobsterRepository.findByUsername("zombie")).willReturn(mobster);
 
         assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
     }
@@ -38,12 +39,11 @@ public class MobsterServiceImplTest {
     @Test
     public void createMobsters() {
         Mobster mobster = new Mobster("1", JOHN_SMITH, "");
+        MobsterWrapper mobsterWrapper = new MobsterWrapper(Collections.singletonList(mobster));
+        given(mobsterRepository.saveAll(anyCollection())).willReturn(mobsterWrapper.getMobsters());
 
-        given(mobsterReactiveRepository.saveAll(any(Publisher.class)))
-                .willReturn(Flux.just(mobster));
+        List<Mobster> createdMobster = mobsterServiceImpl.createMobsters(Collections.singletonList(mobster));
 
-        Flux<Mobster> createdMobster = mobsterServiceImpl.createMobsters(Flux.just(mobster));
-
-        assertThat(mobster, is(equalTo(createdMobster.blockFirst())));
+        assertThat(createdMobster, is(equalTo(mobsterWrapper.getMobsters())));
     }
 }

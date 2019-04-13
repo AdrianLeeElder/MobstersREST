@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class ActionJob {
-
     @Id
     private String id;
     private final Mobster mobster;

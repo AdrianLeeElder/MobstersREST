@@ -4,8 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NoDailyActionsException extends Throwable{
-
+public class NoDailyActionsException extends RuntimeException{
     public NoDailyActionsException() {
         super("There are no daily actions saved in the daily actions collection.");
     }

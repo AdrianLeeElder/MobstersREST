@@ -3,7 +3,6 @@ package com.adrian.mobsters.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.security.KeyStore;

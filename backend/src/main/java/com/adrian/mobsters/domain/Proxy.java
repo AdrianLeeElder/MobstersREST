@@ -13,8 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Document(collection = "proxies")
 @NoArgsConstructor
-public class Proxy implements Comparable {
-
+public class Proxy implements Comparable<Proxy> {
     @Id
     private String id;
     @NotBlank
@@ -42,11 +41,10 @@ public class Proxy implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Proxy proxy = (Proxy) o;
-        if (sinceLastUpdate > proxy.getSinceLastUpdate()) {
+    public int compareTo(Proxy p) {
+        if (sinceLastUpdate > p.getSinceLastUpdate()) {
             return 1;
-        } else if (sinceLastUpdate < proxy.getSinceLastUpdate()) {
+        } else if (sinceLastUpdate < p.getSinceLastUpdate()) {
             return -1;
         }
 

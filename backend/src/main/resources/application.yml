@@ -8,7 +8,7 @@ spring:
   profiles: dev
   data:
     mongodb:
-      uri: mongodb://adrian:haxuk23D@localhost:27017/admin
+      uri: ${MONGODB_URI}
     com:
       adrian:
         mobsters: TRACE
@@ -18,13 +18,6 @@ action-executor:
   thread-max-pool-size: 1
   thread-queue-capacity: 1000
   max-failures: 3
-springbootwebfluxjjwt:
-  jjwt:
-    expiration: 28800
-  password:
-    encoder:
-      iteration: 33
-      keylength: 256
 logging:
   level:
     org:

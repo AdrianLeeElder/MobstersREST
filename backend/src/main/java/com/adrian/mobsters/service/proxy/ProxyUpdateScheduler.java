@@ -1,7 +1,7 @@
 package com.adrian.mobsters.service.proxy;
 
 import com.adrian.mobsters.domain.Proxy;
-import com.adrian.mobsters.repository.ProxyReactiveRepository;
+import com.adrian.mobsters.repository.ProxyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +21,7 @@ public class ProxyUpdateScheduler {
     @Autowired
     private ProxyExtracter proxyExtracter;
     @Autowired
-    private ProxyReactiveRepository proxyReactiveRepository;
+    private ProxyRepository proxyRepository;
     //update proxies twice a day
     private static final long PROXY_UPDATE_INTERVAL = 43200000;
 
@@ -30,9 +30,9 @@ public class ProxyUpdateScheduler {
      */
     @Scheduled(fixedDelay = PROXY_UPDATE_INTERVAL)
     public void replaceProxies() {
-        proxyReactiveRepository.deleteAll().subscribe();
+        proxyRepository.deleteAll();
         List<Proxy> proxies = proxyExtracter.getProxiesFromPageString(proxyDownloader.getProxyPage());
-        proxyReactiveRepository.saveAll(proxies).subscribe();
+        proxyRepository.saveAll(proxies);
         log.debug("Refreshed proxies: {}", proxies);
     }
 }

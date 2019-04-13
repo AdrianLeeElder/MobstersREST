@@ -2,85 +2,63 @@ package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
-import com.adrian.mobsters.repository.ActionJobReactiveRepository;
-import com.adrian.mobsters.repository.MobsterReactiveRepository;
-import com.adrian.mobsters.service.MobsterService;
+import com.adrian.mobsters.repository.ActionJobRepository;
+import com.adrian.mobsters.repository.MobsterRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.reactivestreams.Publisher;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static com.adrian.mobsters.util.TestUtils.asJsonString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MobsterControllerTest {
-
     @Mock
-    private MobsterService mobsterService;
+    private MobsterRepository mobsterRepository;
     @Mock
-    private MobsterReactiveRepository mobsterReactiveRepository;
-    @Mock
-    private ActionJobReactiveRepository actionJobReactiveRepository;
+    private ActionJobRepository actionJobRepository;
     @InjectMocks
     private MobsterController mobsterController;
-    private WebTestClient webTestClient;
     private List<ActionJob> actionJobList;
+    private MockMvc mockMvc;
 
     @Before
     public void setup() {
-        webTestClient = WebTestClient
-                .bindToController(mobsterController)
-                .build();
+        mockMvc = MockMvcBuilders.standaloneSetup(mobsterController).build();
     }
 
     @Test
-    public void getAllMobsters() {
-        actionJobList = Collections.singletonList(new ActionJob(null,null, true, false));
+    public void getAllMobsters() throws Exception {
+        actionJobList = Collections.singletonList(new ActionJob(null, null, true, false));
         Mobster mobster = new Mobster("1", "Zombie", "");
 
-        given(mobsterReactiveRepository.findAll()).willReturn(Flux.just(mobster));
+        List<Mobster> mobsters = Collections.singletonList(mobster);
+        given(mobsterRepository.findAll()).willReturn(mobsters);
+        given(actionJobRepository.findByMobsterUsername("Zombie")).willReturn(actionJobList);
 
-        given(actionJobReactiveRepository.findByMobsterUsername("Zombie"))
-                .willReturn(Flux.fromIterable(actionJobList));
-
-        webTestClient.get().uri("/api/v1/mobster")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(Mobster.class)
-                .hasSize(1)
-                .consumeWith(response -> {
-                    Objects.requireNonNull(response);
-
-                    for (Mobster m : response.getResponseBody()) {
-                        assertTrue(m.getActionJobs() != null && !m.getActionJobs().isEmpty());
-                    }
-                });
+        mockMvc.perform(get("/api/v1/mobsters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(mobsters)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void createNewMobster() {
+    public void createNewMobster() throws Exception {
         Mobster mobster = new Mobster("1", "john", "");
-
-        Mono<Mobster> mobsterMono = Mono.just(new Mobster("1", "zombie", ""));
-
-        webTestClient
-                .post()
-                .uri("/api/v1/mobster")
-                .body(mobsterMono, Mobster.class).exchange()
-                .expectStatus().isOk();
+        mockMvc.perform(post("/api/v1/mobsters", mobster)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(mobster)));
     }
 }

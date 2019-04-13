@@ -1,35 +1,32 @@
 package com.adrian.mobsters.service;
 
 import com.adrian.mobsters.domain.Mobster;
-import com.adrian.mobsters.repository.MobsterReactiveRepository;
+import com.adrian.mobsters.repository.MobsterRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class MobsterServiceImpl implements MobsterService {
-
-    private MobsterReactiveRepository mobsterReactiveRepository;
+    private MobsterRepository mobsterRepository;
 
     @Override
     public String retrieveMobsterPassword(String username) {
-        Mobster mobster = mobsterReactiveRepository.findByUsername(username).block();
+        Mobster mobster = mobsterRepository.findByUsername(username);
         return mobster.getPassword();
     }
 
     @Override
-    public Flux<Mobster> getMobsters() {
-        return mobsterReactiveRepository
-                .findAll();
+    public List<Mobster> getMobsters() {
+        return mobsterRepository.findAll();
     }
 
     @Override
-    public Flux<Mobster> createMobsters(Publisher<Mobster> mobster) {
-        return mobsterReactiveRepository.saveAll(mobster);
+    public List<Mobster> createMobsters(List<Mobster> mobster) {
+        return mobsterRepository.saveAll(mobster);
     }
 }

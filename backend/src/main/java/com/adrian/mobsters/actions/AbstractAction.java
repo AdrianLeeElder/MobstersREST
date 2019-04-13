@@ -1,7 +1,6 @@
 package com.adrian.mobsters.actions;
 
 import com.adrian.mobsters.FancyBox;
-import com.adrian.mobsters.Login;
 import com.adrian.mobsters.exception.ActionFailedException;
 import com.adrian.mobsters.service.ActionExecutor;
 import com.adrian.mobsters.service.ActionService;

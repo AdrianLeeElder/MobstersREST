@@ -4,9 +4,9 @@ import com.adrian.mobsters.domain.Action;
 import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.DailyAction;
 import com.adrian.mobsters.domain.Mobster;
-import com.adrian.mobsters.repository.ActionJobReactiveRepository;
-import com.adrian.mobsters.repository.DailyActionReactiveRepository;
-import com.adrian.mobsters.repository.MobsterReactiveRepository;
+import com.adrian.mobsters.repository.ActionJobRepository;
+import com.adrian.mobsters.repository.DailyActionRepository;
+import com.adrian.mobsters.repository.MobsterRepository;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,13 +27,12 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionJobCreatorTest {
-
     @Mock
-    private ActionJobReactiveRepository actionJobReactiveRepository;
+    private ActionJobRepository actionJobRepository;
     @Mock
-    private MobsterReactiveRepository mobsterReactiveRepository;
+    private MobsterRepository mobsterRepository;
     @Mock
-    private DailyActionReactiveRepository dailyActionReactiveRepository;
+    private DailyActionRepository dailyActionRepository;
     @InjectMocks
     private ActionJobCreator actionJobCreator;
     private Mobster mobster;
@@ -48,21 +46,16 @@ public class ActionJobCreatorTest {
         mobster = new Mobster("1", "zombie", "");
         dailyActionList = Collections.singletonList(new DailyAction("Login"));
 
-        given(mobsterReactiveRepository.findByUsernameRegex("zombie")).willReturn(Flux.just(mobster));
-        given(dailyActionReactiveRepository.findAll()).willReturn(Flux.fromIterable(dailyActionList));
-        given(actionJobReactiveRepository.findByDailyTrueAndMobsterUsernameRegex(anyString()))
-                .willReturn(Flux.empty());
-        given(actionJobReactiveRepository.saveAll(any(Iterable.class))).willAnswer(a -> Flux.fromIterable(
-                a.getArgument(0)
-        ));
+        given(mobsterRepository.findByUsernameRegex("zombie")).willReturn(Collections.singletonList(mobster));
+        given(dailyActionRepository.findAll()).willReturn(dailyActionList);
+        given(actionJobRepository.findByDailyTrueAndMobsterUsernameRegex(anyString()))
+                .willReturn(Collections.emptyList());
+        given(actionJobRepository.saveAll(any(Iterable.class))).willAnswer(a -> a.getArgument(0));
     }
 
     @Test
     public void actionJobHasSuppliedMobsterUsername() {
-        List<ActionJob> actual = actionJobCreator
-                .getNewDailyActionJobs(Collections.singletonList("zombie"))
-                .collectList()
-                .block();
+        List<ActionJob> actual = actionJobCreator.getNewDailyActionJobs(Collections.singletonList("zombie"));
 
         ActionJob expected = newActionJob("Login");
 
@@ -71,31 +64,29 @@ public class ActionJobCreatorTest {
 
     @Test
     public void whenNoMobsterExist() {
-        given(mobsterReactiveRepository
+        given(mobsterRepository
                 .findByUsernameRegex("johnes|zombie"))
-                .willReturn(Flux.empty());
+                .willReturn(Collections.emptyList());
 
         expectedException.expectMessage("No mobsters matched the supplied username regex: johnes|zombie");
 
-        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie")).subscribe();
+        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"));
     }
 
     @Test
     public void whenOnlyOneMobsterInTheListDoesntExist() {
-        given(mobsterReactiveRepository.findByUsernameRegex("johnes|zombie"))
-                .willReturn(Flux.fromIterable(Collections.singletonList(mobster)));
+        given(mobsterRepository.findByUsernameRegex("johnes|zombie"))
+                .willReturn(Collections.singletonList(mobster));
 
         expectedException.expectMessage("Mobster with username johnes not found.");
 
-        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie")).subscribe();
+        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"));
     }
 
     @Test
     public void getAllDailyActionJobsForGivenListOfUsernames() {
         List<ActionJob> actual = actionJobCreator
-                .getNewDailyActionJobs(Collections.singletonList("zombie"))
-                .collectList()
-                .block();
+                .getNewDailyActionJobs(Collections.singletonList("zombie"));
 
         ActionJob expected = newActionJob("Login");
 
@@ -105,9 +96,7 @@ public class ActionJobCreatorTest {
     @Test
     public void getSingleActionJob() {
         List<ActionJob> actual = actionJobCreator
-                .getNewDailyActionJobs(Collections.singletonList("zombie"))
-                .collectList()
-                .block();
+                .getNewDailyActionJobs(Collections.singletonList("zombie"));
 
         ActionJob expected = newActionJob("Login");
 
@@ -116,9 +105,9 @@ public class ActionJobCreatorTest {
 
     @Test
     public void createActionJobForAllMobsters() {
-        given(mobsterReactiveRepository.findAll()).willReturn(Flux.just(mobster));
+        given(mobsterRepository.findAll()).willReturn(Collections.singletonList(mobster));
 
-        List<ActionJob> actual = actionJobCreator.getNewDailyJobForAllMobsters().collectList().block();
+        List<ActionJob> actual = actionJobCreator.getNewDailyJobForAllMobsters();
 
         ActionJob expected = newActionJob("Login");
 

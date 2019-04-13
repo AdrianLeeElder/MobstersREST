@@ -1,7 +1,6 @@
 package com.adrian.mobsters.service;
 
 import com.adrian.mobsters.actions.AbstractAction;
-import com.adrian.mobsters.actions.Refresh;
 import com.adrian.mobsters.exception.ActionFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

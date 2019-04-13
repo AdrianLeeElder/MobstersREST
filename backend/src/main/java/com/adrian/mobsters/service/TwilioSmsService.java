@@ -34,9 +34,7 @@ public class TwilioSmsService implements SmsService {
     public void sendSms(String message) {
         List<User> users =
                 userReactiveRepository
-                        .findAll()
-                        .collectList()
-                        .block();
+                        .findAll();
 
         if (users != null) {
             List<PhoneNumber> phoneNumbers = users.stream()

@@ -2,7 +2,7 @@ package com.adrian.mobsters.service.proxy;
 
 import com.adrian.mobsters.domain.Proxy;
 import com.adrian.mobsters.exception.ProxyNotAvailableException;
-import com.adrian.mobsters.repository.ProxyReactiveRepository;
+import com.adrian.mobsters.repository.ProxyRepository;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +24,7 @@ import static org.mockito.Mockito.verify;
 public class ProxyServiceImplTest {
 
     @Mock
-    private ProxyReactiveRepository proxyReactiveRepository;
+    private ProxyRepository proxyRepository;
     @InjectMocks
     private ProxyServiceImpl proxyServiceImpl;
     @Rule
@@ -51,9 +49,9 @@ public class ProxyServiceImplTest {
     public void sortedProxyList() {
         List<Proxy> unsortedProxyList = getUnsortedProxyList();
         List<Proxy> sortedProxyList = getSortedProxyList();
-        Flux<Proxy> sortedProxies = proxyServiceImpl.getSortedProxyList(Flux.fromIterable(unsortedProxyList));
+        List<Proxy> sortedProxies = proxyServiceImpl.getSortedProxyList(unsortedProxyList);
 
-        assertEquals(sortedProxyList, sortedProxies.collectList().block());
+        assertEquals(sortedProxyList, sortedProxies);
     }
 
     private List<Proxy> getSortedProxyList() {
@@ -73,7 +71,7 @@ public class ProxyServiceImplTest {
         proxy1.setInUse(true);
         proxy2.setInUse(true);
 
-        given(proxyReactiveRepository.findAll()).willReturn(Flux.fromIterable(getProxyList(proxy1, proxy2, proxy3)));
+        given(proxyRepository.findAll()).willReturn(getProxyList(proxy1, proxy2, proxy3));
         Proxy proxy = proxyServiceImpl.getAvailableProxy();
 
         assertEquals(proxy3, proxy);
@@ -86,22 +84,20 @@ public class ProxyServiceImplTest {
         proxy2.setInUse(true);
         proxy3.setInUse(true);
 
-        given(proxyReactiveRepository.findAll()).willReturn(Flux.fromIterable(getProxyList(proxy1, proxy2, proxy3)));
+        given(proxyRepository.findAll()).willReturn(getProxyList(proxy1, proxy2, proxy3));
 
         proxyServiceImpl.getAvailableProxy();
     }
 
     @Test
     public void handleProxyFailure() {
-        given(proxyReactiveRepository.delete(proxy1)).willReturn(Mono.empty());
-
         proxy1.setAttempts(12);
         proxy1.setFailures(9);
         proxy1.setSuccesses(3);
         proxyServiceImpl.handleProxyFailure(proxy1);
 
         assertEquals(proxy1.getFailures(), 10);
-        verify(proxyReactiveRepository).delete(proxy1);
+        verify(proxyRepository).delete(proxy1);
     }
 
     @Test
@@ -112,6 +108,6 @@ public class ProxyServiceImplTest {
         proxyServiceImpl.handleProxyFailure(proxy1);
 
         assertEquals(proxy1.getFailures(), 3);
-        verify(proxyReactiveRepository, times(0)).delete(proxy1);
+        verify(proxyRepository, times(0)).delete(proxy1);
     }
 }

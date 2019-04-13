@@ -1,15 +1,11 @@
 package com.adrian.mobsters.service;
 
 import com.adrian.mobsters.domain.Mobster;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public interface MobsterService {
-
     String retrieveMobsterPassword(String username);
-
-    Flux<Mobster> getMobsters();
-
-    Flux<Mobster> createMobsters(Publisher<Mobster> mobster);
+    List<Mobster> getMobsters();
+    List<Mobster> createMobsters(List<Mobster> mobster);
 }

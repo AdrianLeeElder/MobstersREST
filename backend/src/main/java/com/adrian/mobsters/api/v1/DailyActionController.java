@@ -1,30 +1,38 @@
 package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.DailyAction;
-import com.adrian.mobsters.domain.DailyActionContainer;
-import com.adrian.mobsters.repository.DailyActionReactiveRepository;
+import com.adrian.mobsters.domain.DailyActionWrapper;
+import com.adrian.mobsters.repository.DailyActionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
+
+/**
+ * Interact with {@link DailyAction}s.
+ */
 @RestController
-@RequestMapping("api/v1/dailyaction")
+@RequestMapping("api/v1/daily-actions")
 @RequiredArgsConstructor
 public class DailyActionController {
+    private final DailyActionRepository dailyActionRepository;
 
-    private final DailyActionReactiveRepository dailyActionReactiveRepository;
-
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("add")
-    public Mono<DailyAction> newAction(@RequestBody DailyAction dailyAction) {
-        return dailyActionReactiveRepository.save(dailyAction);
+    public DailyAction newAction(@RequestBody DailyAction dailyAction) {
+        return dailyActionRepository.save(dailyAction);
     }
 
+    /**
+     * Add a list of daily actions.
+     *
+     * @param dailyActionContainer wrapper object for supplying multiple daily actions.
+     * @return a list of daily actions
+     */
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("addlist")
-    public Flux<DailyAction> addList(@RequestBody DailyActionContainer dailyActionContainer) {
-        return dailyActionReactiveRepository.saveAll(dailyActionContainer.getDailyActions());
+    public List<DailyAction> addList(@RequestBody DailyActionWrapper dailyActionContainer) {
+        return dailyActionRepository.saveAll(dailyActionContainer.getDailyActions());
     }
 }
