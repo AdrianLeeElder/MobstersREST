@@ -1,1 +1,7 @@
 language: java
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+script: "mvn cobertura:cobertura"
+env:
+  global:
+  - CODECOV_TOKEN=2fbdbfa6-350b-43fe-acce-c36bc2de7992
