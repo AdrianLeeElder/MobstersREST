@@ -11,6 +11,7 @@ import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.DailyActionRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.adrian.mobsters.repository.NoDailyActionsException;
+import com.google.common.collect.Lists;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -110,7 +111,7 @@ public class ActionJobCreator {
     }
 
     public List<ActionJob> getNewDailyJobForAllMobsters() {
-        List<Mobster> mobsters = mobsterRepository.findAll();
+        List<Mobster> mobsters = Lists.newArrayList(mobsterRepository.findAll());
 
         return getNewDailyActionJobs(mobsters
                 .stream()

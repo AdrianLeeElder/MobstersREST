@@ -5,7 +5,10 @@ import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.exception.MobsterNotFoundException;
 import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
+import com.adrian.mobsters.service.MobsterService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +19,15 @@ import java.util.Optional;
 @RequestMapping("/api/v1/mobsters")
 @AllArgsConstructor
 public class MobsterController {
+    private static final int RESULTS_PER_PAGE = 10;
     private MobsterRepository mobsterRepository;
     private ActionJobRepository actionJobRepository;
+    private final MobsterService mobsterService;
 
     @GetMapping
-    public List<Mobster> getMobsters() {
-        List<Mobster> mobsters = mobsterRepository.findAll();
+    public List<Mobster> getMobsters(int pageNumber) {
+        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "username"));
+        List<Mobster> mobsters = mobsterService.getMobsters(new PageRequest(pageNumber, RESULTS_PER_PAGE, sort));
 
         for (Mobster mobster : mobsters) {
             List<ActionJob> actionJobs = actionJobRepository
@@ -31,6 +37,11 @@ public class MobsterController {
         }
 
         return mobsters;
+    }
+
+    @GetMapping("/total-pages")
+    public long getTotalPages() {
+        return mobsterRepository.count() / RESULTS_PER_PAGE;
     }
 
     @PostMapping
