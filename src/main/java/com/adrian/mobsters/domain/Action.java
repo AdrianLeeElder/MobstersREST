@@ -1,23 +1,20 @@
 package com.adrian.mobsters.domain;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.constraints.NotBlank;
 
 import static com.adrian.mobsters.domain.StatusConstants.*;
 
 @Document
 @Data
 public class Action {
-
     @Id
     private String id;
     @NonNull
     private final String name;
+    private final int sequence;
     @NonNull
     private String status = "";
 

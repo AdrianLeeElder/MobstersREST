@@ -18,8 +18,6 @@ public class ActionJob {
     private String id;
     private final Mobster mobster;
     private final List<Action> actionList;
-    private final boolean daily;
-    private final boolean buyProperty;
     private int failureCount;
     private String status = "";
 

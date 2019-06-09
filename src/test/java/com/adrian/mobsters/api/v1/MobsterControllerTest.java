@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +59,7 @@ public class MobsterControllerTest {
 
     @Test
     public void getAllMobsters() throws Exception {
-        actionJobList = Collections.singletonList(new ActionJob(null, null, true, false));
+        actionJobList = Collections.singletonList(new ActionJob(null, null));
         Mobster mobster = new Mobster("1", "Zombie", "", TRACY);
 
         List<Mobster> mobsters = Collections.singletonList(mobster);

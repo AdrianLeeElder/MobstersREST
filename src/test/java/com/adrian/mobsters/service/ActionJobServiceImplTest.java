@@ -60,8 +60,8 @@ public class ActionJobServiceImplTest {
     public void setUp() {
         proxy = new Proxy("localhost", 2323);
         Mobster mobster = new Mobster("1", "BOB", "", "tracy");
-        actionList = Collections.singletonList(new Action("LoginHtmlUnit"));
-        actionJob = new ActionJob(mobster, actionList, true, false);
+        actionList = Collections.singletonList(new Action("LoginHtmlUnit", 1));
+        actionJob = new ActionJob(mobster, actionList);
         loginHtmlUnit = new Login();
 
         given(webClient.getOptions()).willReturn(webClientOptions);
