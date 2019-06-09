@@ -1,5 +1,6 @@
 package com.adrian.mobsters.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
@@ -9,6 +10,7 @@ import static com.adrian.mobsters.domain.StatusConstants.*;
 
 @Document
 @Data
+@Builder
 public class Action {
     @Id
     private String id;
@@ -16,6 +18,7 @@ public class Action {
     private final String name;
     private final int sequence;
     @NonNull
+    @Builder.Default
     private String status = "";
 
     public void setQueued() {

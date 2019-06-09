@@ -14,24 +14,19 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.adrian.mobsters.util.TestUtils.asJsonString;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,12 +54,10 @@ public class MobsterControllerTest {
 
     @Test
     public void getAllMobsters() throws Exception {
-        actionJobList = Collections.singletonList(new ActionJob(null, null));
-        Mobster mobster = new Mobster("1", "Zombie", "", TRACY);
-
+        actionJobList = Collections.singletonList(ActionJob.builder().build());
+        Mobster mobster = Mobster.builder().id("1").username("Zombie").user(TRACY).build();
         List<Mobster> mobsters = Collections.singletonList(mobster);
         given(mobsterService.getMobsters(eq(TRACY), any(PageRequest.class))).willReturn(mobsters);
-        given(actionJobRepository.findByMobsterUsername("Zombie")).willReturn(actionJobList);
 
         mockMvc.perform(get("/api/v1/mobsters?&pageNumber=0").principal(principal)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +67,7 @@ public class MobsterControllerTest {
 
     @Test
     public void createNewMobster() throws Exception {
-        Mobster mobster = new Mobster("1", "john", "", TRACY);
+        Mobster mobster = Mobster.builder().id("1").username("john").user(TRACY).build();
         mockMvc.perform(post("/api/v1/mobsters", mobster)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(mobster)));
@@ -83,7 +76,7 @@ public class MobsterControllerTest {
     @Test
     public void getTotalPages() throws Exception {
         given(mobsterRepository.findAllByUser(TRACY))
-                .willReturn(Collections.singletonList(new Mobster("", "", "", "")));
+                .willReturn(Collections.singletonList(Mobster.builder().build()));
         mockMvc.perform(get(BASE_API + "/total-pages").principal(principal)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(1)))
@@ -92,7 +85,7 @@ public class MobsterControllerTest {
 
     @Test
     public void deleteMobster() throws Exception {
-        Mobster toDelete = new Mobster("1", "bigtrac", "", TRACY);
+        Mobster toDelete = Mobster.builder().id("1").user(TRACY).username("bigtrac").build();
         when(mobsterRepository.findAllByIdAndUser("1", TRACY)).thenReturn(Optional.of(toDelete));
 
         mockMvc.perform(delete(BASE_API + "/delete/1").principal(principal))

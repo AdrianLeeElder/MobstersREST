@@ -1,5 +1,7 @@
 package com.adrian.mobsters.domain;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Document
 @Data
+@Builder
 public class Mobster {
 
     @Id
@@ -25,6 +28,8 @@ public class Mobster {
      * The authorized user this mobster belongs to.
      */
     private final String user;
+    @ApiModelProperty(notes = "Priority for running action jobs.", example = "HIGH, NORMAL, LOW")
+    private final String priority;
     @Transient
     private List<ActionJob> actionJobs;
 }

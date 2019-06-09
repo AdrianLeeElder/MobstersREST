@@ -26,7 +26,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
-public class ActionJobServiceImplTest {
+public class ActionJobExecutorImplTest {
+    private static final String TRACY = "tracy";
+
     static {
         System.setProperty("webdriver.chrome.driver", "/");
     }
@@ -50,7 +52,7 @@ public class ActionJobServiceImplTest {
     @Mock
     private ProxyRepository proxyRepository;
     @InjectMocks
-    private ActionJobServiceImpl actionJobServiceImpl;
+    private ActionJobExecutorImpl actionJobServiceImpl;
     private ActionJob actionJob;
     private List<Action> actionList;
     private Proxy proxy;
@@ -59,9 +61,9 @@ public class ActionJobServiceImplTest {
     @Before
     public void setUp() {
         proxy = new Proxy("localhost", 2323);
-        Mobster mobster = new Mobster("1", "BOB", "", "tracy");
-        actionList = Collections.singletonList(new Action("LoginHtmlUnit", 1));
-        actionJob = new ActionJob(mobster, actionList);
+        Mobster mobster = Mobster.builder().id("1").username("BOB").user(TRACY).build();
+        actionList = Collections.singletonList(Action.builder().id("1").name("LoginHtmlUnit").build());
+        actionJob = ActionJob.builder().mobster(mobster).actionList(actionList).build();
         loginHtmlUnit = new Login();
 
         given(webClient.getOptions()).willReturn(webClientOptions);

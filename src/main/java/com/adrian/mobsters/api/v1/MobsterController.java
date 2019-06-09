@@ -1,9 +1,7 @@
 package com.adrian.mobsters.api.v1;
 
-import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.exception.MobsterNotFoundException;
-import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.adrian.mobsters.service.MobsterService;
 import lombok.AllArgsConstructor;
@@ -22,26 +20,14 @@ import java.util.Optional;
 public class MobsterController {
     private static final int RESULTS_PER_PAGE = 10;
     private MobsterRepository mobsterRepository;
-    private ActionJobRepository actionJobRepository;
     private final MobsterService mobsterService;
 
     @GetMapping
     public List<Mobster> getMobsters(int pageNumber, Principal principal) {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "username"));
-        List<Mobster> mobsters = mobsterService.getMobsters(principal.getName(),
+
+        return mobsterService.getMobsters(principal.getName(),
                 new PageRequest(pageNumber, RESULTS_PER_PAGE, sort));
-
-        for (Mobster mobster : mobsters) {
-            List<ActionJob> actionJobs = actionJobRepository
-                    .findByMobsterUsername(mobster.getUsername());
-            Mobster m = new Mobster(mobster.getId(),
-                    mobster.getUsername(),
-                    mobster.getPassword(),
-                    "tracy");
-            m.setActionJobs(actionJobs);
-        }
-
-        return mobsters;
     }
 
     @GetMapping("/total-pages")

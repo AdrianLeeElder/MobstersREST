@@ -38,7 +38,7 @@ public class MobsterServiceImplTest {
 
     @Test
     public void readUserPassword() {
-        Mobster mobster = new Mobster("1", "zombie", "hax", "tracy");
+        Mobster mobster = Mobster.builder().id("1").user("zombie").password("hax").user("tracy").build();
         given(mobsterRepository.findByUsernameAndUser("zombie", "tracy")).willReturn(mobster);
 
         assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
@@ -46,7 +46,7 @@ public class MobsterServiceImplTest {
 
     @Test
     public void createMobsters() {
-        Mobster mobster = new Mobster("1", JOHN_SMITH, "", "tracy");
+        Mobster mobster = Mobster.builder().id("1").username(JOHN_SMITH).user("tracy").build();
         MobsterWrapper mobsterWrapper = new MobsterWrapper(Collections.singletonList(mobster));
         given(mobsterRepository.saveAll(anyCollection())).willReturn(mobsterWrapper.getMobsters());
 

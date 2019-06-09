@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ActionJobServiceImpl implements ActionJobService {
+public class ActionJobExecutorImpl implements ActionJobExecutor {
     private final ActionExecutor actionExecutor;
     private final ActionService actionService;
     private final ActionJobRepository actionJobRepository;
