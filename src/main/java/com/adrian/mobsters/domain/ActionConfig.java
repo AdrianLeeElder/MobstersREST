@@ -1,6 +1,7 @@
 package com.adrian.mobsters.domain;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Data
 @Document
+@Builder
 public class ActionConfig {
     @Id
     private final String id;
