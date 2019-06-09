@@ -14,10 +14,17 @@ public class Mobster {
 
     @Id
     private final String id;
+    /**
+     * The mobster account name.
+     */
     @NotBlank
     private final String username;
     @NotBlank
     private final String password;
+    /**
+     * The authorized user this mobster belongs to.
+     */
+    private final String user;
     @Transient
     private List<ActionJob> actionJobs;
 }

@@ -13,10 +13,10 @@ spring:
       adrian:
         mobsters: TRACE
 ---
-okta:
+otka:
   oauth2:
-    client-id: 0oan3vml3k4TQUvJz356
-    issuer: https://dev-210965.okta.com/oauth2/default
+    client-id: 0oap5pp8tQpO9VgqS356
+    issuer:  https://dev-210965.okta.com/oauth2/default
 action-executor:
   thread-core-size: 1
   thread-max-pool-size: 1

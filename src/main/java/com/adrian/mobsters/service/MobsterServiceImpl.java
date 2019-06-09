@@ -15,17 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class MobsterServiceImpl implements MobsterService {
-    private MobsterRepository mobsterRepository;
+    private final MobsterRepository mobsterRepository;
+    private final UserService userService;
 
     @Override
     public String retrieveMobsterPassword(String username) {
-        Mobster mobster = mobsterRepository.findByUsername(username);
+        Mobster mobster = mobsterRepository.findByUsernameAndUser(username, userService.getUser());
         return mobster.getPassword();
     }
 
     @Override
-    public List<Mobster> getMobsters(Pageable pageable) {
-        Page<Mobster> mobsters = mobsterRepository.findAll(pageable);
+    public List<Mobster> getMobsters(String user, Pageable pageable) {
+        Page<Mobster> mobsters = mobsterRepository.findAllByUser(user, pageable);
         return mobsters.getContent();
     }
 

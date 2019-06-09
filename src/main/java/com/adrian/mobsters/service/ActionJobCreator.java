@@ -28,29 +28,32 @@ public class ActionJobCreator {
     private final DailyActionRepository dailyActionRepository;
     private final MobsterRepository mobsterRepository;
     private final ActionJobRepository actionJobRepository;
+    private final UserService userService;
 
     /**
      * Get a new {@link ActionJob} for each of the given {@link Mobster} usernames.
      *
      * @param usernames list of usernames to generate a new {@link ActionJob} for.
+     * @param user      current requesting user
      * @return a list of {@link ActionJob}s for the given usernames.
      * @throws MobsterNotFoundException     for any mobster that is not found by the given username.
      * @throws NoMobsterUsernamesMatchRegex if there were no mobsters matching the generated regex. e.g (user1|user2)
      */
-    public List<ActionJob> getNewDailyActionJobs(@NonNull List<String> usernames) {
-        return getNewDailyActionJobs(String.join("|", usernames));
+    public List<ActionJob> getNewDailyActionJobs(@NonNull List<String> usernames, String user) {
+        return getNewDailyActionJobs(String.join("|", usernames), user);
     }
 
     /**
      * Get a new {@link ActionJob} for each of the given {@link Mobster} usernames.
      *
      * @param usernameRegex regex to match on existing regexes.
+     * @param user          current requesting user
      * @return a list of {@link ActionJob}s for the given usernames.
      * @throws MobsterNotFoundException     for any mobster that is not found by the given username.
      * @throws NoMobsterUsernamesMatchRegex if there were no mobsters matching the generated regex. e.g (user1|user2)
      */
-    public List<ActionJob> getNewDailyActionJobs(String usernameRegex) {
-        List<Mobster> mobsters = mobsterRepository.findByUsernameRegex(usernameRegex);
+    public List<ActionJob> getNewDailyActionJobs(String usernameRegex, String user) {
+        List<Mobster> mobsters = mobsterRepository.findByUsernameRegexAndUser(usernameRegex, user);
         if (mobsters.isEmpty()) {
             throw new NoMobsterUsernamesMatchRegex(usernameRegex);
         }
@@ -58,7 +61,7 @@ public class ActionJobCreator {
         validateAllMobstersFound(mobsters, usernameRegex);
         verifyNoDailyActionJobsExistWithUsernames(mobsters, usernameRegex);
 
-        List<DailyAction> dailyActions = dailyActionRepository.findAll();
+        List<DailyAction> dailyActions = dailyActionRepository.findAllByUser(user);
 
         if (dailyActions.isEmpty()) {
             throw new NoDailyActionsException();
@@ -70,7 +73,7 @@ public class ActionJobCreator {
                     ActionJob actionJob = new ActionJob(m,
                             getActionListFromDailyActions(dailyActions), true, false);
 
-                    actionJob.setQueued(true);
+                    actionJob.setQueued();
 
                     return actionJob;
                 }).collect(toList());
@@ -110,12 +113,17 @@ public class ActionJobCreator {
                 .collect(toList());
     }
 
-    public List<ActionJob> getNewDailyJobForAllMobsters() {
+    public List<ActionJob> getNewDailyJobForAllMobsters(String user) {
         List<Mobster> mobsters = Lists.newArrayList(mobsterRepository.findAll());
 
         return getNewDailyActionJobs(mobsters
-                .stream()
-                .map(Mobster::getUsername)
-                .collect(Collectors.toList()));
+                        .stream()
+                        .map(Mobster::getUsername)
+                        .collect(Collectors.toList()),
+                user);
+    }
+
+    public List<ActionJob> getNewDailyJobForAllMobsters() {
+        return getNewDailyJobForAllMobsters(userService.getUser());
     }
 }

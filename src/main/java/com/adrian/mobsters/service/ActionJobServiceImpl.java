@@ -39,9 +39,7 @@ public class ActionJobServiceImpl implements ActionJobService {
     public void run(ActionJob actionJob) {
         try {
             runActionJob(actionJob);
-            actionJob.setRunning(false);
-            actionJob.setQueued(false);
-            actionJob.setComplete(true);
+            actionJob.setComplete();
             actionJobRepository.save(actionJob);
         } catch (ActionFailedException e) {
             handleActionJobFailure(e, actionJob);
@@ -56,14 +54,13 @@ public class ActionJobServiceImpl implements ActionJobService {
     private void handleActionJobFailure(Throwable e, ActionJob actionJob) {
         log.error("Unable to execute action.", e);
         if (actionJobHasMaximumFailures(actionJob)) {
-            actionJob.setFrozen(true);
+            actionJob.setFrozen();
             log.debug("Deleting action job: {}", actionJob);
         } else {
             actionJob.setFailureCount(actionJob.getFailureCount() + 1);
             log.debug("Incrementing failure count for action job: {}", actionJob);
         }
 
-        actionJob.setQueued(false);
         actionJobRepository.save(actionJob);
 
         requeueNonFrozenActionJob(actionJob);
@@ -89,18 +86,17 @@ public class ActionJobServiceImpl implements ActionJobService {
         try {
             proxy.setInUse(true);
             proxyRepository.save(proxy);
-            actionJob.setQueued(false);
-            actionJob.setRunning(true);
+            actionJob.setRunning();
             actionJobRepository.save(actionJob);
             processActionJobList(actionJob, chromeDriver);
 
             proxy.setSuccesses(proxy.getSuccesses() + 1);
             proxyRepository.save(proxy);
 
-            actionJob.setComplete(true);
+            actionJob.setComplete();
             actionJobRepository.save(actionJob);
         } catch (Exception ex) {
-            log.error("Uncaught exception {}", ex);
+            log.error("Uncaught exception: ", ex);
         } finally {
             proxy.setInUse(false);
             proxyRepository.save(proxy);
@@ -114,8 +110,7 @@ public class ActionJobServiceImpl implements ActionJobService {
         for (Action action : actionJob.getActionList()) {
             runAction(actionJob, action);
             actionExecutor.executeAction(chromeDriver, getAbstractAction(actionJob, action));
-            action.setRunning(false);
-            action.setComplete(true);
+            action.setComplete();
             actionJobRepository.save(actionJob);
         }
     }
@@ -134,7 +129,7 @@ public class ActionJobServiceImpl implements ActionJobService {
     }
 
     private void runAction(ActionJob actionJob, Action action) {
-        action.setRunning(true);
+        action.setRunning();
         actionJobRepository.save(actionJob);
     }
 }

@@ -7,17 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document(collection = "dailyActions")
-@NoArgsConstructor
-public class DailyAction implements Comparable{
+public class DailyAction implements Comparable {
 
     @Id
-    private String id;
-    private String name;
+    private final String id;
+    private final String name;
+    private final String user;
     private int sequence;
-
-    public DailyAction(String name) {
-        this.name = name;
-    }
 
     @Override
     public int compareTo(Object o) {

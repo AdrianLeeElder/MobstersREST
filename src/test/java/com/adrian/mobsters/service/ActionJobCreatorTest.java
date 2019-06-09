@@ -24,15 +24,19 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionJobCreatorTest {
+    public static final String TRACY = "tracy";
     @Mock
     private ActionJobRepository actionJobRepository;
     @Mock
     private MobsterRepository mobsterRepository;
     @Mock
     private DailyActionRepository dailyActionRepository;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private ActionJobCreator actionJobCreator;
     private Mobster mobster;
@@ -43,11 +47,13 @@ public class ActionJobCreatorTest {
 
     @Before
     public void setUp() {
-        mobster = new Mobster("1", "zombie", "");
-        dailyActionList = Collections.singletonList(new DailyAction("Login"));
+        when(userService.getUser()).thenReturn("tracy");
+        mobster = new Mobster("1", "zombie", "", TRACY);
+        dailyActionList = Collections.singletonList(new DailyAction("2", "Login", TRACY));
 
-        given(mobsterRepository.findByUsernameRegex("zombie")).willReturn(Collections.singletonList(mobster));
-        given(dailyActionRepository.findAll()).willReturn(dailyActionList);
+        given(mobsterRepository.findByUsernameRegexAndUser("zombie", TRACY))
+                .willReturn(Collections.singletonList(mobster));
+        given(dailyActionRepository.findAllByUser(TRACY)).willReturn(dailyActionList);
         given(actionJobRepository.findByDailyTrueAndMobsterUsernameRegex(anyString()))
                 .willReturn(Collections.emptyList());
         given(actionJobRepository.saveAll(any(Iterable.class))).willAnswer(a -> a.getArgument(0));
@@ -55,7 +61,7 @@ public class ActionJobCreatorTest {
 
     @Test
     public void actionJobHasSuppliedMobsterUsername() {
-        List<ActionJob> actual = actionJobCreator.getNewDailyActionJobs(Collections.singletonList("zombie"));
+        List<ActionJob> actual = actionJobCreator.getNewDailyActionJobs(Collections.singletonList("zombie"), TRACY);
 
         ActionJob expected = newActionJob("Login");
 
@@ -65,28 +71,28 @@ public class ActionJobCreatorTest {
     @Test
     public void whenNoMobsterExist() {
         given(mobsterRepository
-                .findByUsernameRegex("johnes|zombie"))
+                .findByUsernameRegexAndUser("johnes|zombie", TRACY))
                 .willReturn(Collections.emptyList());
 
         expectedException.expectMessage("No mobsters matched the supplied username regex: johnes|zombie");
 
-        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"));
+        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"), TRACY);
     }
 
     @Test
     public void whenOnlyOneMobsterInTheListDoesntExist() {
-        given(mobsterRepository.findByUsernameRegex("johnes|zombie"))
+        given(mobsterRepository.findByUsernameRegexAndUser("johnes|zombie", TRACY))
                 .willReturn(Collections.singletonList(mobster));
 
         expectedException.expectMessage("Mobster with username johnes not found.");
 
-        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"));
+        actionJobCreator.getNewDailyActionJobs(Arrays.asList("johnes", "zombie"), TRACY);
     }
 
     @Test
     public void getAllDailyActionJobsForGivenListOfUsernames() {
         List<ActionJob> actual = actionJobCreator
-                .getNewDailyActionJobs(Collections.singletonList("zombie"));
+                .getNewDailyActionJobs(Collections.singletonList("zombie"), TRACY);
 
         ActionJob expected = newActionJob("Login");
 
@@ -96,7 +102,7 @@ public class ActionJobCreatorTest {
     @Test
     public void getSingleActionJob() {
         List<ActionJob> actual = actionJobCreator
-                .getNewDailyActionJobs(Collections.singletonList("zombie"));
+                .getNewDailyActionJobs(Collections.singletonList("zombie"), TRACY);
 
         ActionJob expected = newActionJob("Login");
 
@@ -116,13 +122,13 @@ public class ActionJobCreatorTest {
 
     private ActionJob newActionJob(String actionJob) {
         ActionJob action = new ActionJob(mobster, Collections.singletonList(new Action(actionJob)), true, false);
-        action.setQueued(true);
+        action.setQueued();
         return action;
     }
 
     private ActionJob emptyActionJobWithNoActions() {
         ActionJob actionJob = new ActionJob(mobster, Collections.emptyList(), true, false);
-        actionJob.setQueued(true);
+        actionJob.setQueued();
         return actionJob;
     }
 }

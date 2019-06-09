@@ -59,7 +59,7 @@ public class ActionJobServiceImplTest {
     @Before
     public void setUp() {
         proxy = new Proxy("localhost", 2323);
-        Mobster mobster = new Mobster("1", "BOB", "");
+        Mobster mobster = new Mobster("1", "BOB", "", "tracy");
         actionList = Collections.singletonList(new Action("LoginHtmlUnit"));
         actionJob = new ActionJob(mobster, actionList, true, false);
         loginHtmlUnit = new Login();

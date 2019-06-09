@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +25,8 @@ public class ActionJobController {
 
     @GetMapping("new/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<ActionJob> addDailyJob(@PathVariable String username) {
-        List<ActionJob> actionJobs = actionJobCreator.getNewDailyActionJobs(username);
+    public List<ActionJob> addDailyJob(@PathVariable String username, Principal principal) {
+        List<ActionJob> actionJobs = actionJobCreator.getNewDailyActionJobs(username, principal.getName());
 
         for (ActionJob actionJob : actionJobs) {
             actionJobService.run(actionJob);
@@ -35,8 +37,8 @@ public class ActionJobController {
 
     @GetMapping("queue-all")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<ActionJob> queueAll() {
-        List<ActionJob> actionJobs = actionJobCreator.getNewDailyJobForAllMobsters();
+    public List<ActionJob> queueAll(Principal principal) {
+        List<ActionJob> actionJobs = actionJobCreator.getNewDailyJobForAllMobsters(principal.getName());
         for (ActionJob actionJob : actionJobs) {
             actionJobService.run(actionJob);
         }
@@ -46,8 +48,9 @@ public class ActionJobController {
 
     @PostMapping("new")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<ActionJob> addDailyJobs(@RequestBody MobsterUsernameWrapper mobsterUsernameWrapper) {
-        List<ActionJob> actionJobs = actionJobCreator.getNewDailyActionJobs(mobsterUsernameWrapper.getUsernames());
+    public List<ActionJob> addDailyJobs(@RequestBody MobsterUsernameWrapper mobsterUsernameWrapper, Principal principal) {
+        List<ActionJob> actionJobs = actionJobCreator.getNewDailyActionJobs(mobsterUsernameWrapper.getUsernames(),
+                principal.getName());
 
         for (ActionJob actionJob : actionJobs) {
             actionJobService.run(actionJob);
@@ -67,8 +70,13 @@ public class ActionJobController {
         throw new ActionJobNotFound(id);
     }
 
-    @GetMapping("/mobster/{username}")
-    public List<ActionJob> getActionJobsUsername(@PathVariable String username) {
-        return actionJobRepository.findByMobsterUsername(username);
+    @GetMapping("/{username}/{limit}")
+    public List<ActionJob> getActionJobsUsername(@PathVariable String username, @PathVariable int limit) {
+        List<ActionJob> actionJobs = actionJobRepository.findByMobsterUsername(username);
+        if (actionJobs == null || actionJobs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return actionJobs.subList(0, limit);
     }
 }

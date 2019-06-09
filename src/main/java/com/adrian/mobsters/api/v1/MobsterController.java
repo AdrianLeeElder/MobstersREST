@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +26,18 @@ public class MobsterController {
     private final MobsterService mobsterService;
 
     @GetMapping
-    public List<Mobster> getMobsters(int pageNumber) {
+    public List<Mobster> getMobsters(int pageNumber, Principal principal) {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "username"));
-        List<Mobster> mobsters = mobsterService.getMobsters(new PageRequest(pageNumber, RESULTS_PER_PAGE, sort));
+        List<Mobster> mobsters = mobsterService.getMobsters(principal.getName(),
+                new PageRequest(pageNumber, RESULTS_PER_PAGE, sort));
 
         for (Mobster mobster : mobsters) {
             List<ActionJob> actionJobs = actionJobRepository
                     .findByMobsterUsername(mobster.getUsername());
-            Mobster m = new Mobster(mobster.getId(), mobster.getUsername(), mobster.getPassword());
+            Mobster m = new Mobster(mobster.getId(),
+                    mobster.getUsername(),
+                    mobster.getPassword(),
+                    "tracy");
             m.setActionJobs(actionJobs);
         }
 
@@ -40,8 +45,13 @@ public class MobsterController {
     }
 
     @GetMapping("/total-pages")
-    public long getTotalPages() {
-        return mobsterRepository.count() / RESULTS_PER_PAGE;
+    public double getTotalPages(Principal principal) {
+        List<Mobster> mobsters = mobsterRepository.findAllByUser(principal.getName());
+        if (mobsters == null || mobsters.isEmpty()) {
+            return 0;
+        }
+
+        return Math.ceil(mobsters.size() / (double) RESULTS_PER_PAGE);
     }
 
     @PostMapping
@@ -51,14 +61,14 @@ public class MobsterController {
     }
 
     @GetMapping("{username}")
-    public Mobster getMobsterByUserName(@PathVariable String username) {
-        return mobsterRepository.findByUsername(username);
+    public Mobster getMobsterByUserName(@PathVariable String username, Principal principal) {
+        return mobsterRepository.findByUsernameAndUser(username, principal.getName());
     }
 
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteMobster(@PathVariable String id) {
-        Optional<Mobster> mobsterOptional = mobsterRepository.findById(id);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteMobster(@PathVariable String id, Principal principal) {
+        Optional<Mobster> mobsterOptional = mobsterRepository.findAllByIdAndUser(id, principal.getName());
         if (!mobsterOptional.isPresent()) {
             throw new MobsterNotFoundException(id);
         }

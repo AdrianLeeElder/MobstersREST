@@ -3,6 +3,7 @@ package com.adrian.mobsters.service;
 import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.domain.MobsterWrapper;
 import com.adrian.mobsters.repository.MobsterRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,22 +24,29 @@ public class MobsterServiceImplTest {
 
     @Mock
     private MobsterRepository mobsterRepository;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private MobsterServiceImpl mobsterServiceImpl;
 
     private String JOHN_SMITH = "John Smith";
 
+    @Before
+    public void setUp() throws Exception {
+        given(userService.getUser()).willReturn("tracy");
+    }
+
     @Test
     public void readUserPassword() {
-        Mobster mobster = new Mobster("1", "zombie", "hax");
-        given(mobsterRepository.findByUsername("zombie")).willReturn(mobster);
+        Mobster mobster = new Mobster("1", "zombie", "hax", "tracy");
+        given(mobsterRepository.findByUsernameAndUser("zombie", "tracy")).willReturn(mobster);
 
         assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
     }
 
     @Test
     public void createMobsters() {
-        Mobster mobster = new Mobster("1", JOHN_SMITH, "");
+        Mobster mobster = new Mobster("1", JOHN_SMITH, "", "tracy");
         MobsterWrapper mobsterWrapper = new MobsterWrapper(Collections.singletonList(mobster));
         given(mobsterRepository.saveAll(anyCollection())).willReturn(mobsterWrapper.getMobsters());
 

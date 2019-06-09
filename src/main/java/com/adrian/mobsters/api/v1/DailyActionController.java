@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -34,5 +35,13 @@ public class DailyActionController {
     @PostMapping("addlist")
     public List<DailyAction> addList(@RequestBody DailyActionWrapper dailyActionContainer) {
         return dailyActionRepository.saveAll(dailyActionContainer.getDailyActions());
+    }
+
+    /**
+     * Get a list of the daily actions for the given user.
+     */
+    @GetMapping
+    public List<DailyAction> getByUser(Principal user) {
+        return dailyActionRepository.findAllByUser(user.getName());
     }
 }
