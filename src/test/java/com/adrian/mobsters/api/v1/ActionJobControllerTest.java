@@ -1,6 +1,9 @@
 package com.adrian.mobsters.api.v1;
 
-import com.adrian.mobsters.domain.*;
+import com.adrian.mobsters.domain.Action;
+import com.adrian.mobsters.domain.ActionJob;
+import com.adrian.mobsters.domain.ActionTemplate;
+import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
@@ -25,7 +28,6 @@ import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +39,7 @@ public class ActionJobControllerTest {
     private static final List<Action> ACTION_LIST = Collections.singletonList(Action.builder().name("200 Energy Link").build());
     private static final ActionTemplate ACTION_TEMPLATE = ActionTemplate.builder()
             .actionsList(ACTION_LIST).build();
-    private static final Mobster MOBSTER = Mobster.builder().priority(Priorities.NORMAL).build();
+    private static final Mobster MOBSTER = Mobster.builder().priority(1).build();
     @Mock
     private MobsterRepository mobsterRepository;
     @Mock
@@ -66,7 +68,7 @@ public class ActionJobControllerTest {
         List<ActionJob> expectedJobs = Collections.singletonList(ActionJob
                 .builder()
                 .user(TRACY)
-                .priority(Priorities.NORMAL)
+                .priority(1)
                 .actionList(ACTION_LIST)
                 .mobster(MOBSTER)
                 .build());

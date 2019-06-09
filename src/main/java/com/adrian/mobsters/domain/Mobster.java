@@ -28,8 +28,9 @@ public class Mobster {
      * The authorized user this mobster belongs to.
      */
     private final String user;
-    @ApiModelProperty(notes = "Priority for running action jobs.", example = "HIGH, NORMAL, LOW")
-    private final String priority;
+    @ApiModelProperty(notes = "Priority for running this account.", example = "0, 1, 2")
+    @Builder.Default
+    private final int priority = 1;
     @Transient
     private List<ActionJob> actionJobs;
 }
