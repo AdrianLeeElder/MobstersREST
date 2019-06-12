@@ -45,4 +45,6 @@ public interface MobsterRepository extends PagingAndSortingRepository<Mobster, S
      * @return
      */
     List<Mobster> findAllByUser(String name);
+
+    Optional<Mobster> findByUsername(String username, String user);
 }

@@ -15,7 +15,7 @@ import static com.adrian.mobsters.domain.StatusConstants.*;
 @Builder
 public class ActionJob {
     @Id
-    private final String id;
+    private String id;
     private final Mobster mobster;
     private final int priority;
     private final List<Action> actionList;

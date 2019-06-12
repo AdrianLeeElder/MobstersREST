@@ -1,26 +1,23 @@
 package com.adrian.mobsters.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import static com.adrian.mobsters.domain.StatusConstants.*;
 
-@Document
 @Data
 @Builder
 public class Action {
-    @Id
-    private String id;
     @NonNull
     private final String name;
     private final int sequence;
     @NonNull
     @Builder.Default
-    private String status = "";
+    private String status = IDLE;
 
+    @JsonIgnore
     public void setQueued() {
         this.status = QUEUED;
     }
@@ -37,14 +34,17 @@ public class Action {
         this.status = FROZEN;
     }
 
+    @JsonIgnore
     public boolean isFrozen() {
         return this.status.equals(FROZEN);
     }
 
+    @JsonIgnore
     public boolean isComplete() {
         return this.status.equals(COMPLETE);
     }
 
+    @JsonIgnore
     public boolean isRunning() {
         return this.status.equals(RUNNING);
     }

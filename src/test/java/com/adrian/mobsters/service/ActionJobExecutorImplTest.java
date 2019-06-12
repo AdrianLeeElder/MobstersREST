@@ -62,7 +62,7 @@ public class ActionJobExecutorImplTest {
     public void setUp() {
         proxy = new Proxy("localhost", 2323);
         Mobster mobster = Mobster.builder().id("1").username("BOB").user(TRACY).build();
-        actionList = Collections.singletonList(Action.builder().id("1").name("LoginHtmlUnit").build());
+        actionList = Collections.singletonList(Action.builder().name("LoginHtmlUnit").build());
         actionJob = ActionJob.builder().mobster(mobster).actionList(actionList).build();
         loginHtmlUnit = new Login();
 

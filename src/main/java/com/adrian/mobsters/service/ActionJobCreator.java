@@ -7,5 +7,5 @@ import com.adrian.mobsters.domain.Mobster;
 import java.util.List;
 
 public interface ActionJobCreator {
-    List<ActionJob> createFromTemplate(ActionTemplate actionTemplate, List<Mobster> mobsters);
+    List<ActionJob> createFromTemplate(ActionTemplate actionTemplate, List<Mobster> mobsters, String user);
 }

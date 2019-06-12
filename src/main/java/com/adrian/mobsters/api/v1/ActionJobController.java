@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,9 +45,14 @@ public class ActionJobController {
         }
 
         List<ActionJob> actionJobs = actionJobCreator.createFromTemplate(actionTemplateOpt.get(),
-                mobsterRepository.findByUsernameRegexAndUser(String.join("|", mobsterNames),
-                        principal.getName()));
+                mobsterRepository.findByUsernameRegexAndUser(getRegex(mobsterNames), principal.getName()),
+                principal.getName());
 
         return actionJobRepository.saveAll(actionJobs);
+    }
+
+    private String getRegex(List<String> mobsterNames) {
+        return mobsterNames
+                .stream().collect(Collectors.joining("|", "^(", ")$"));
     }
 }

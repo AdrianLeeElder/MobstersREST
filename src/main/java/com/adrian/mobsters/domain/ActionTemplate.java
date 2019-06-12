@@ -16,15 +16,16 @@ import java.util.List;
  */
 @Data
 @Document
-@Builder
+@Builder(toBuilder = true)
 @ApiModel(description = "A Configuration for groups of actions and their sequence. This is used to define ActionJobs.")
 public class ActionTemplate {
     @Id
-    private final String id;
+    @ApiModelProperty(hidden = true)
+    private String id;
     @ApiModelProperty(notes = "A list of actions for this template")
-    private final List<Action> actionsList;
+    private final List<ActionTemplateAction> actions;
     @ApiModelProperty(notes = "The name of this template.", example = "Daily Actions")
     private final String name;
-    @ApiModelProperty(notes = "The user that this template belongs to.", example = "bob@yahoo.com")
+    @ApiModelProperty(notes = "The user that this template belongs to.", example = "bob@yahoo.com", hidden = true)
     private final String user;
 }

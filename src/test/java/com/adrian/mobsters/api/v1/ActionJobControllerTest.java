@@ -1,9 +1,6 @@
 package com.adrian.mobsters.api.v1;
 
-import com.adrian.mobsters.domain.Action;
-import com.adrian.mobsters.domain.ActionJob;
-import com.adrian.mobsters.domain.ActionTemplate;
-import com.adrian.mobsters.domain.Mobster;
+import com.adrian.mobsters.domain.*;
 import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
@@ -37,8 +34,10 @@ public class ActionJobControllerTest {
     private static final String BASE_API = "/api/v1/action-jobs";
     private static final String TRACY = "tracy";
     private static final List<Action> ACTION_LIST = Collections.singletonList(Action.builder().name("200 Energy Link").build());
+    private static final List<ActionTemplateAction> ACTION_LIST_TEMPLATE =
+            Collections.singletonList(ActionTemplateAction.builder().name("200 Energy Link").build());
     private static final ActionTemplate ACTION_TEMPLATE = ActionTemplate.builder()
-            .actionsList(ACTION_LIST).build();
+            .actions(ACTION_LIST_TEMPLATE).build();
     private static final Mobster MOBSTER = Mobster.builder().priority(1).build();
     @Mock
     private MobsterRepository mobsterRepository;
@@ -73,7 +72,7 @@ public class ActionJobControllerTest {
                 .mobster(MOBSTER)
                 .build());
         given(actionJobRepository.saveAll(anyIterable())).willReturn(expectedJobs);
-        given(actionJobCreator.createFromTemplate(ACTION_TEMPLATE, Collections.singletonList(MOBSTER)))
+        given(actionJobCreator.createFromTemplate(ACTION_TEMPLATE, Collections.singletonList(MOBSTER), principal.getName()))
                 .willReturn(expectedJobs);
 
         mockMvc.perform(get(BASE_API + "/1/" + "bigtrac").principal(principal)

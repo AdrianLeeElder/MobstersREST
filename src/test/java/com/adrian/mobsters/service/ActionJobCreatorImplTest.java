@@ -18,6 +18,7 @@ import static org.mockito.Mockito.spy;
 public class ActionJobCreatorImplTest {
     private static final String TRACY = "tracy";
     private static final List<Action> ACTION_LIST = Collections.singletonList(Action.builder().name("Login").build());
+    private static final List<ActionTemplateAction> ACTION_LIST_TEMPLATE = Collections.singletonList(ActionTemplateAction.builder().name("Login").build());
     private static final LocalDateTime NOW = LocalDateTime.now();
     private ActionJobCreatorImpl actionJobCreatorImpl;
 
@@ -37,7 +38,7 @@ public class ActionJobCreatorImplTest {
         ActionTemplate template = ActionTemplate
                 .builder()
                 .user(TRACY)
-                .actionsList(ACTION_LIST)
+                .actions(ACTION_LIST_TEMPLATE)
                 .name("Daily Actions")
                 .build();
 
@@ -46,6 +47,6 @@ public class ActionJobCreatorImplTest {
         assertEquals(Collections
                         .singletonList(ActionJob.builder().createdDate(NOW).priority(1).actionList(ACTION_LIST)
                                 .user(TRACY).mobster(mobster).build()),
-                actionJobCreatorImpl.createFromTemplate(template, Collections.singletonList(mobster)));
+                actionJobCreatorImpl.createFromTemplate(template, Collections.singletonList(mobster), "tracy"));
     }
 }

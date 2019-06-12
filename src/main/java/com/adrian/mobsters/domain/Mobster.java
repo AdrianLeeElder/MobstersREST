@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 @Builder
 public class Mobster {
-
     @Id
     private final String id;
     /**
@@ -31,6 +30,5 @@ public class Mobster {
     @ApiModelProperty(notes = "Priority for running this account.", example = "0, 1, 2")
     @Builder.Default
     private final int priority = 1;
-    @Transient
     private List<ActionJob> actionJobs;
 }

@@ -39,8 +39,6 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
     public void run(ActionJob actionJob) {
         try {
             runActionJob(actionJob);
-            actionJob.setComplete();
-            actionJobRepository.save(actionJob);
         } catch (ActionFailedException e) {
             handleActionJobFailure(e, actionJob);
         }

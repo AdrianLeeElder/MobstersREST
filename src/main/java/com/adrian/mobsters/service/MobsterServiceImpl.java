@@ -1,6 +1,7 @@
 package com.adrian.mobsters.service;
 
 import com.adrian.mobsters.domain.Mobster;
+import com.adrian.mobsters.exception.MobsterNotFoundException;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,8 +22,13 @@ public class MobsterServiceImpl implements MobsterService {
 
     @Override
     public String retrieveMobsterPassword(String username) {
-        Mobster mobster = mobsterRepository.findByUsernameAndUser(username, userService.getUser());
-        return mobster.getPassword();
+        Optional<Mobster> mobster = mobsterRepository.findByUsername(username, userService.getUser());
+
+        if (!mobster.isPresent()) {
+            throw new MobsterNotFoundException(username);
+        }
+
+        return mobster.get().getPassword();
     }
 
     @Override

@@ -34,5 +34,6 @@ public class ProxyUpdateScheduler {
         List<Proxy> proxies = proxyExtracter.getProxiesFromPageString(proxyDownloader.getProxyPage());
         proxyRepository.saveAll(proxies);
         log.debug("Refreshed proxies: {}", proxies);
+        System.setProperty("proxies.loaded", "true");
     }
 }

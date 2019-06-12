@@ -27,8 +27,8 @@ public class ActionTemplateController {
 
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addTemplate(@RequestBody ActionTemplate actionTemplate) {
-        actionTemplateRepository.save(actionTemplate);
+    public void addTemplate(@RequestBody ActionTemplate actionTemplate, Principal principal) {
+        actionTemplateRepository.save(actionTemplate.toBuilder().user(principal.getName()).build());
     }
 
     @PostMapping("/save")
