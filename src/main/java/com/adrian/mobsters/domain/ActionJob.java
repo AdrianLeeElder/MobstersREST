@@ -21,6 +21,8 @@ public class ActionJob {
     private final List<Action> actionList;
     private final String user;
     private final LocalDateTime createdDate;
+    private final ActionTemplate template;
+    private long completionTime;
     private int failureCount;
     @Builder.Default
     private String status = IDLE;
@@ -53,4 +55,7 @@ public class ActionJob {
         return this.status.equals(IDLE);
     }
 
+    public boolean isRunning() {
+        return this.status.equalsIgnoreCase(RUNNING);
+    }
 }

@@ -35,6 +35,7 @@ public class ActionJobCreatorImpl implements ActionJobCreator {
                                             .build())
                             .collect(toList()))
                     .user(user)
+                    .template(actionTemplate)
                     .build();
 
             actionJobs.add(actionJob);

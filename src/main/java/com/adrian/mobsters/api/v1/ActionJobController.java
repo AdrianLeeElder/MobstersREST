@@ -8,10 +8,14 @@ import com.adrian.mobsters.repository.ActionTemplateRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.adrian.mobsters.service.ActionJobCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +53,19 @@ public class ActionJobController {
                 principal.getName());
 
         return actionJobRepository.saveAll(actionJobs);
+    }
+
+    @GetMapping("/mobster/{mobsterId}/{pageNumber}/{pageSize}")
+    public Page<ActionJob> getActionJobsForMobster(@PathVariable String mobsterId,
+                                                   @PathVariable int pageNumber,
+                                                   @PathVariable int pageSize,
+                                                   Principal principal) {
+        return actionJobRepository
+                .findByUserAndMobster_Id(principal.getName(), mobsterId,
+                        PageRequest.of(pageNumber,
+                                pageSize,
+
+                                Sort.by("createdDate")));
     }
 
     private String getRegex(List<String> mobsterNames) {

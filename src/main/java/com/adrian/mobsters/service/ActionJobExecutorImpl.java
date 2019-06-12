@@ -17,6 +17,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 /**
  * Execute the actions stored in an ActionJob.
  * <p>
@@ -92,6 +95,7 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
             proxyRepository.save(proxy);
 
             actionJob.setComplete();
+            actionJob.setCompletionTime(Duration.between(actionJob.getCreatedDate(), LocalDateTime.now()).toMillis());
             actionJobRepository.save(actionJob);
         } catch (Exception ex) {
             log.error("Uncaught exception: ", ex);

@@ -33,14 +33,12 @@ public class WebDriverConfig {
         desiredCapabilities.setCapability("proxy", proxy);
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments(
-                "--headless",
                 "--disable-gpu",
                 "--ignore-certificate-errors",
                 "--disable-notifications",
                 "--start-maximized",
                 "--no-sandbox",
                 "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36",
-                "--remote-debugging-port=9222",
                 "--lang=en");
         desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 

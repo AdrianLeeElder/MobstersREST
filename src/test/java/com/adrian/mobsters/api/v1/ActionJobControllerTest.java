@@ -11,6 +11,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -80,5 +84,22 @@ public class ActionJobControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(asJsonString(expectedJobs)));
+    }
+
+    @Test
+    public void viewActionJobsForMobster() throws Exception {
+        ActionJob actionJob = ActionJob.builder()
+                .mobster(Mobster.builder().user(TRACY).build()).build();
+
+        List<ActionJob> actionList = Collections.singletonList(actionJob);
+        Page<ActionJob> page = new PageImpl<>(actionList);
+        given(actionJobRepository.findByUserAndMobster_Id(TRACY, "1",
+                PageRequest.of(0, 10, Sort.by("createdDate"))))
+                .willReturn(page);
+
+        mockMvc.perform(get(BASE_API + "/mobster/1/0/10").principal(principal))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(asJsonString(page)));
     }
 }
