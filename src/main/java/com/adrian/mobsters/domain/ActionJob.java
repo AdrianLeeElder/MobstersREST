@@ -22,6 +22,7 @@ public class ActionJob {
     private final String user;
     private final LocalDateTime createdDate;
     private final ActionTemplate template;
+    private LocalDateTime runStart;
     private long completionTime;
     private int failureCount;
     @Builder.Default

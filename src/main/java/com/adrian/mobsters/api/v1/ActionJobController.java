@@ -1,6 +1,7 @@
 package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionJob;
+import com.adrian.mobsters.domain.ActionJobStatistics;
 import com.adrian.mobsters.domain.ActionTemplate;
 import com.adrian.mobsters.exception.ActionTemplateNotFoundException;
 import com.adrian.mobsters.repository.ActionJobRepository;
@@ -15,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,5 +72,17 @@ public class ActionJobController {
     private String getRegex(List<String> mobsterNames) {
         return mobsterNames
                 .stream().collect(Collectors.joining("|", "^(", ")$"));
+    }
+
+    @GetMapping("/statistics/{templateName}")
+    public ActionJobStatistics getTodaysStatistics(@PathVariable String templateName, Principal principal) {
+        LocalDateTime today = LocalDateTime.now();
+        List<ActionJob> jobs = actionJobRepository
+                .findByUserAndCreatedDateBetweenAndTemplate_Name(principal.getName(),
+                        today.minusDays(1),
+                        today,
+                        templateName);
+        
+        return ActionJobStatistics.builder().actionJobList(jobs).build();
     }
 }

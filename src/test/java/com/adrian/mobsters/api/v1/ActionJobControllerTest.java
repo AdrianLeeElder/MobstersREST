@@ -20,18 +20,21 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.adrian.mobsters.util.TestUtils.asJsonString;
-import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionJobControllerTest {
@@ -101,5 +104,38 @@ public class ActionJobControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJsonString(page)));
+    }
+
+    @Test
+    public void getStatisticsForToday() throws Exception {
+        List<ActionJob> jobList = Arrays.asList(ActionJob
+                        .builder()
+                        .createdDate(LocalDateTime.now())
+                        .status("complete")
+                        .build(),
+                ActionJob
+                        .builder()
+                        .createdDate(LocalDateTime.now())
+                        .status("complete")
+                        .build(),
+                ActionJob
+                        .builder()
+                        .createdDate(LocalDateTime.now())
+                        .status("idle")
+                        .build());
+
+        given(actionJobRepository
+                .findByUserAndCreatedDateBetweenAndTemplate_Name(eq(TRACY),
+                        isA(LocalDateTime.class),
+                        isA(LocalDateTime.class),
+                        eq("daily")))
+                .willReturn(jobList);
+
+        mockMvc.perform(get(BASE_API + "/statistics/daily")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .principal(principal))
+                .andDo(print())
+                .andExpect(jsonPath("$.totalIdle", is(equalTo(1))))
+                .andExpect(jsonPath("$.totalCompleted", is(equalTo(2))));
     }
 }

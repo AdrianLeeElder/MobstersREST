@@ -48,6 +48,7 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
     }
 
     private void runActionJob(ActionJob actionJob) throws ActionFailedException {
+        actionJob.setRunStart(LocalDateTime.now());
         log.debug("Executing action job {}", actionJob);
         executeActions(actionJob);
     }
@@ -95,7 +96,7 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
             proxyRepository.save(proxy);
 
             actionJob.setComplete();
-            actionJob.setCompletionTime(Duration.between(actionJob.getCreatedDate(), LocalDateTime.now()).toMillis());
+            actionJob.setCompletionTime(Duration.between(actionJob.getRunStart(), LocalDateTime.now()).toMillis());
             actionJobRepository.save(actionJob);
         } catch (Exception ex) {
             log.error("Uncaught exception: ", ex);
