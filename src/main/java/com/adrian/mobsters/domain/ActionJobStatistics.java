@@ -35,7 +35,11 @@ public class ActionJobStatistics {
 
     public long getCompletionProgress() {
         int size = actionJobList.size();
-        return (getTotalCompleted() * 100) / size;
+        if (size > 0){
+            return (getTotalCompleted() * 100) / size;
+        }
+
+        return 0;
     }
 
     public double getAverageCompletionTime() {
