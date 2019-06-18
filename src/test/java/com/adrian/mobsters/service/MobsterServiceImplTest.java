@@ -32,11 +32,6 @@ public class MobsterServiceImplTest {
 
     private String JOHN_SMITH = "John Smith";
 
-    @Before
-    public void setUp() throws Exception {
-        given(userService.getUser()).willReturn("tracy");
-    }
-
     @Test
     public void readUserPassword() {
         Mobster mobster = Mobster.builder().id("1").user("zombie").password("hax").user("tracy").build();

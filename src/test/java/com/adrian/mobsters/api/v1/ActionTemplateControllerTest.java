@@ -17,8 +17,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static com.adrian.mobsters.util.TestUtils.asJsonString;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -60,7 +62,7 @@ public class ActionTemplateControllerTest {
     @Test
     public void addTemplate() throws Exception {
         mockMvc
-                .perform(post(BASE_API + "/new")
+                .perform(post(BASE_API + "/new").principal(principal)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(ActionTemplate.builder().build())))
                 .andDo(print())

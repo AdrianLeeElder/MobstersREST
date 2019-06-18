@@ -69,8 +69,6 @@ public class ActionJobControllerTest {
     @Test
     public void createFromTemplate() throws Exception {
         given(actionTemplateRepository.findByIdAndUser("1", TRACY)).willReturn(Optional.of(ACTION_TEMPLATE));
-        given(mobsterRepository.findByUsernameRegexAndUser("bigtrac", TRACY))
-                .willReturn(Collections.singletonList(MOBSTER));
         List<ActionJob> expectedJobs = Collections.singletonList(ActionJob
                 .builder()
                 .user(TRACY)
@@ -79,8 +77,6 @@ public class ActionJobControllerTest {
                 .mobster(MOBSTER)
                 .build());
         given(actionJobRepository.saveAll(anyIterable())).willReturn(expectedJobs);
-        given(actionJobCreator.createFromTemplate(ACTION_TEMPLATE, Collections.singletonList(MOBSTER), principal.getName()))
-                .willReturn(expectedJobs);
 
         mockMvc.perform(get(BASE_API + "/1/" + "bigtrac").principal(principal)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))

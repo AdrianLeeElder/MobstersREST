@@ -45,7 +45,7 @@ public class ActionJobCreatorImplTest {
         List<Mobster> mobsters = Collections.singletonList(mobster);
 
         assertEquals(Collections
-                        .singletonList(ActionJob.builder().createdDate(NOW).priority(1).actionList(ACTION_LIST)
+                        .singletonList(ActionJob.builder().createdDate(NOW).priority(1).template(template).actionList(ACTION_LIST)
                                 .user(TRACY).mobster(mobster).build()),
                 actionJobCreatorImpl.createFromTemplate(template, Collections.singletonList(mobster), "tracy"));
     }
