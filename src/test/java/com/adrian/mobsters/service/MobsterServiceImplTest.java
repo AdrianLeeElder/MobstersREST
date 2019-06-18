@@ -1,5 +1,6 @@
 package com.adrian.mobsters.service;
 
+import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.domain.MobsterWrapper;
 import com.adrian.mobsters.repository.MobsterRepository;
@@ -25,8 +26,6 @@ public class MobsterServiceImplTest {
 
     @Mock
     private MobsterRepository mobsterRepository;
-    @Mock
-    private UserService userService;
     @InjectMocks
     private MobsterServiceImpl mobsterServiceImpl;
 
@@ -49,5 +48,10 @@ public class MobsterServiceImplTest {
         List<Mobster> createdMobster = mobsterServiceImpl.createMobsters(Collections.singletonList(mobster));
 
         assertThat(createdMobster, is(equalTo(mobsterWrapper.getMobsters())));
+    }
+
+    @Test
+    public void getMobsters() {
+
     }
 }
