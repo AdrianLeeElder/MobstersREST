@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -39,7 +40,7 @@ public class MobsterServiceImplTest {
     @Test
     public void readUserPassword() {
         Mobster mobster = Mobster.builder().id("1").user("zombie").password("hax").user("tracy").build();
-        given(mobsterRepository.findByUsernameAndUser("zombie", "tracy")).willReturn(mobster);
+        given(mobsterRepository.findByUsername("zombie")).willReturn(Optional.of(mobster));
 
         assertThat(mobsterServiceImpl.retrieveMobsterPassword("zombie"), equalTo("hax"));
     }

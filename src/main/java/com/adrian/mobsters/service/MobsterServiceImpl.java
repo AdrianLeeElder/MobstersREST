@@ -18,11 +18,10 @@ import java.util.Optional;
 @Slf4j
 public class MobsterServiceImpl implements MobsterService {
     private final MobsterRepository mobsterRepository;
-    private final UserService userService;
 
     @Override
     public String retrieveMobsterPassword(String username) {
-        Optional<Mobster> mobster = mobsterRepository.findByUsername(username, userService.getUser());
+        Optional<Mobster> mobster = mobsterRepository.findByUsername(username);
 
         if (!mobster.isPresent()) {
             throw new MobsterNotFoundException(username);
