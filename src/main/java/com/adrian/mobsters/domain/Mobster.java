@@ -4,11 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @Document
 @Data
@@ -30,5 +28,8 @@ public class Mobster {
     @ApiModelProperty(notes = "Priority for running this account.", example = "0, 1, 2")
     @Builder.Default
     private final int priority = 1;
-    private List<ActionJob> actionJobs;
+    @ApiModelProperty(notes = "Shows the status of the action jobs. Goes from Running -> Complete -> Queued -> Idle.",
+            example = "complete")
+    @Builder.Default
+    private String actionJobStatus;
 }
