@@ -1,6 +1,7 @@
 package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionTemplate;
+import com.adrian.mobsters.domain.ActionTemplateAction;
 import com.adrian.mobsters.exception.ActionTemplateNotFoundException;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +46,22 @@ public class ActionTemplateController {
                 String user = template.getUser();
 
                 if (template.getUser().equalsIgnoreCase(user)) {
-                    return actionTemplateRepository.save(templateOpt.get());
+                    return actionTemplateRepository.save(getWithFixedSequences(actionTemplate));
                 }
             }
         }
 
         throw new ActionTemplateNotFoundException(id);
+    }
+
+    private ActionTemplate getWithFixedSequences(ActionTemplate actionTemplate) {
+        List<ActionTemplateAction> actions = actionTemplate.getActions();
+        for (int i = 0; i < actions.size(); i++) {
+            ActionTemplateAction actionTemplateAction = actions.get(i);
+            actionTemplateAction.setSequence(i);
+        }
+
+        return actionTemplate;
     }
 
     @DeleteMapping("/{id}")

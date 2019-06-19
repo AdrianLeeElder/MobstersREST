@@ -1,6 +1,7 @@
 package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionTemplate;
+import com.adrian.mobsters.domain.ActionTemplateAction;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,19 +14,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.adrian.mobsters.util.TestUtils.asJsonString;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTemplateControllerTest {
@@ -95,15 +97,37 @@ public class ActionTemplateControllerTest {
 
     @Test
     public void saveTemplate() throws Exception {
-        ActionTemplate template = ActionTemplate.builder().id("1").user(TRACY).build();
+        List<ActionTemplateAction> actionList =
+                Arrays.asList(ActionTemplateAction
+                                .builder()
+                                .name("Login")
+                                .sequence(2)
+                                .build(),
+                        ActionTemplateAction
+                                .builder()
+                                .name("Logout")
+                                .sequence(1)
+                                .build());
+        ActionTemplate template = ActionTemplate
+                .builder()
+                .id("1")
+                .user(TRACY)
+                .actions(actionList)
+                .build();
+
         when(actionTemplateRepository.findByIdAndUser("1", TRACY))
                 .thenReturn(Optional.of(template));
 
+        when(actionTemplateRepository.save(any())).then(returnsFirstArg());
+
         mockMvc
                 .perform(post(BASE_API + "/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(template)).principal(principal))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(asJsonString(template))
+                        .principal(principal))
                 .andDo(print())
+                .andExpect(jsonPath("$.actions[0].sequence", is(equalTo(0))))
+                .andExpect(jsonPath("$.actions[1].sequence", is(equalTo(1))))
                 .andExpect(status().isAccepted());
     }
 

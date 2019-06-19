@@ -12,5 +12,5 @@ public class ActionTemplateAction {
     @ApiModelProperty(notes = "The name of the Action, corresponding to the name of the ActionConfig.")
     private final String name;
     @ApiModelProperty(notes = "The sequence of this action in the template")
-    private final int sequence;
+    private int sequence;
 }
