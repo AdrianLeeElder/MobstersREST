@@ -1,16 +1,11 @@
 package com.adrian.mobsters.service;
 
-import com.adrian.mobsters.domain.Action;
-import com.adrian.mobsters.domain.ActionJob;
-import com.adrian.mobsters.domain.ActionTemplate;
-import com.adrian.mobsters.domain.Mobster;
+import com.adrian.mobsters.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class ActionJobCreatorImpl implements ActionJobCreator {
@@ -25,15 +20,7 @@ public class ActionJobCreatorImpl implements ActionJobCreator {
                     .priority(mobster.getPriority())
                     .createdDate(getDateTime())
                     .user(mobster.getUser())
-                    .actionList(actionTemplate.getActions()
-                            .stream()
-                            .map(templateAction ->
-                                    Action
-                                            .builder()
-                                            .name(templateAction.getName())
-                                            .sequence(templateAction.getSequence())
-                                            .build())
-                            .collect(toList()))
+                    .actionList(getActionListWithDefault(actionTemplate))
                     .user(user)
                     .template(actionTemplate)
                     .build();
@@ -42,6 +29,30 @@ public class ActionJobCreatorImpl implements ActionJobCreator {
         }
 
         return actionJobs;
+    }
+
+    private List<Action> getActionListWithDefault(ActionTemplate actionTemplate) {
+        ActionTemplateAction login = ActionTemplateAction.builder().name("Login").build();
+        ActionTemplateAction logout = ActionTemplateAction.builder().name("Logout").build();
+
+        List<ActionTemplateAction> resultList = new ArrayList<>();
+        resultList.add(login);
+        resultList.addAll(actionTemplate.getActions());
+        resultList.add(logout);
+
+        List<Action> actions = new ArrayList<>();
+
+        for (int i = 0; i < resultList.size(); i++) {
+            ActionTemplateAction templateAction = resultList.get(i);
+
+            actions.add(Action
+                    .builder()
+                    .name(templateAction.getName())
+                    .sequence(i)
+                    .build());
+        }
+
+        return actions;
     }
 
     protected LocalDateTime getDateTime() {

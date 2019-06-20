@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,8 +18,23 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionJobCreatorImplTest {
     private static final String TRACY = "tracy";
-    private static final List<Action> ACTION_LIST = Collections.singletonList(Action.builder().name("Login").build());
-    private static final List<ActionTemplateAction> ACTION_LIST_TEMPLATE = Collections.singletonList(ActionTemplateAction.builder().name("Login").build());
+    private static final List<Action> ACTION_LIST = Arrays.asList(Action
+                    .builder()
+                    .name("Login")
+                    .sequence(0)
+                    .build(),
+            Action
+                    .builder()
+                    .name("200 Energy Link")
+                    .sequence(1)
+                    .build(),
+            Action
+                    .builder()
+                    .name("Logout")
+                    .sequence(2)
+                    .build());
+    private static final List<ActionTemplateAction> ACTION_LIST_TEMPLATE = Collections
+            .singletonList(ActionTemplateAction.builder().name("200 Energy Link").build());
     private static final LocalDateTime NOW = LocalDateTime.now();
     private ActionJobCreatorImpl actionJobCreatorImpl;
 
@@ -42,11 +58,15 @@ public class ActionJobCreatorImplTest {
                 .name("Daily Actions")
                 .build();
 
-        List<Mobster> mobsters = Collections.singletonList(mobster);
-
         assertEquals(Collections
-                        .singletonList(ActionJob.builder().createdDate(NOW).priority(1).template(template).actionList(ACTION_LIST)
-                                .user(TRACY).mobster(mobster).build()),
+                        .singletonList(ActionJob
+                                .builder()
+                                .createdDate(NOW)
+                                .priority(1)
+                                .template(template)
+                                .actionList(ACTION_LIST)
+                                .user(TRACY).mobster(mobster)
+                                .build()),
                 actionJobCreatorImpl.createFromTemplate(template, Collections.singletonList(mobster), "tracy"));
     }
 }
