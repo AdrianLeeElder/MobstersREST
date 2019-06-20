@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/action-configs")
@@ -17,6 +18,10 @@ public class ActionConfigController {
 
     @GetMapping
     public List<ActionConfig> getActionConfigs() {
-        return actionConfigRepository.findAll();
+        return actionConfigRepository
+                .findAll()
+                .stream()
+                .filter(a -> !a.isSystem())
+                .collect(Collectors.toList());
     }
 }

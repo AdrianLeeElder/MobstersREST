@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ActionConfigControllerTest {
     private static final String BASE_API = "/api/v1/action-configs";
     private static final String ENERGY_LINK = "200 Energy Link";
+    private static final String LOGIN = "Login";
     @Mock
     private ActionConfigRepository actionConfigRepository;
     @InjectMocks
@@ -39,7 +41,13 @@ public class ActionConfigControllerTest {
     @Test
     public void getActionConfigs() throws Exception {
         when(actionConfigRepository.findAll())
-                .thenReturn(Collections.singletonList(ActionConfig
+                .thenReturn(Arrays.asList(
+                        ActionConfig
+                                .builder()
+                                .name(LOGIN)
+                                .system(true)
+                                .build(),
+                        ActionConfig
                         .builder()
                         .name(ENERGY_LINK)
                         .build()));

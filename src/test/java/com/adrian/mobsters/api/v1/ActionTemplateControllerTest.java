@@ -85,7 +85,6 @@ public class ActionTemplateControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-
     @Test
     public void saveTemplate() throws Exception {
         List<ActionTemplateAction> actionList =

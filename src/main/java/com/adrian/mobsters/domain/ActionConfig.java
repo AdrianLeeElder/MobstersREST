@@ -24,4 +24,8 @@ public class ActionConfig {
     private final List<String> finishStrings;
     @ApiModelProperty(notes = "XPath for the button to click.", example = "//button[@id='logout']")
     private final String xPath;
+    @ApiModelProperty(notes = "Whether or not this is a system default action.",
+            example = "Login/Logout",
+            hidden = true)
+    private final boolean system;
 }
