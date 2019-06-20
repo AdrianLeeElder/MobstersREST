@@ -62,16 +62,6 @@ public class ActionTemplateControllerTest {
     }
 
     @Test
-    public void addTemplate() throws Exception {
-        mockMvc
-                .perform(post(BASE_API + "/new").principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(ActionTemplate.builder().build())))
-                .andDo(print())
-                .andExpect(status().isCreated());
-    }
-
-    @Test
     public void deleteTemplate() throws Exception {
         when(actionTemplateRepository.findByIdAndUser("1", TRACY))
                 .thenReturn(Optional.of(ActionTemplate

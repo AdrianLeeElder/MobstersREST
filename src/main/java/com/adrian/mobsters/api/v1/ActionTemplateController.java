@@ -26,12 +26,6 @@ public class ActionTemplateController {
         return actionTemplateRepository.findAllByUser(principal.getName());
     }
 
-    @PostMapping("/new")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addTemplate(@RequestBody ActionTemplate actionTemplate, Principal principal) {
-        actionTemplateRepository.save(actionTemplate.toBuilder().user(principal.getName()).build());
-    }
-
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ActionTemplate saveTemplate(@RequestBody ActionTemplate actionTemplate,
