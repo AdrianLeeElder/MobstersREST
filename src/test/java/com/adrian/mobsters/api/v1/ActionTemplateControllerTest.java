@@ -27,7 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTemplateControllerTest {
@@ -111,7 +112,7 @@ public class ActionTemplateControllerTest {
         when(actionTemplateRepository.save(any())).then(returnsFirstArg());
 
         mockMvc
-                .perform(post(BASE_API + "/save")
+                .perform(post(BASE_API)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(asJsonString(template))
                         .principal(principal))
@@ -122,13 +123,17 @@ public class ActionTemplateControllerTest {
     }
 
     @Test
-    public void saveTemplateNotFound() throws Exception {
-        ActionTemplate template = ActionTemplate.builder().id("1").user(TRACY).build();
+    public void notAuthorized() throws Exception {
+        ActionTemplate template = ActionTemplate.builder()
+                .id("1")
+                .actions(Collections.emptyList())
+                .user("ernesto")
+                .build();
         when(actionTemplateRepository.findByIdAndUser("1", TRACY))
-                .thenReturn(Optional.empty());
+                .thenReturn(Optional.of(template));
 
         mockMvc
-                .perform(post(BASE_API + "/save")
+                .perform(post(BASE_API)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(template)).principal(principal))
                 .andDo(print())

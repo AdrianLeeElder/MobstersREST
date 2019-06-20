@@ -3,6 +3,7 @@ package com.adrian.mobsters.api.v1;
 import com.adrian.mobsters.domain.ActionTemplate;
 import com.adrian.mobsters.domain.ActionTemplateAction;
 import com.adrian.mobsters.exception.ActionTemplateNotFoundException;
+import com.adrian.mobsters.exception.ActionTemplateNotOwnedException;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class ActionTemplateController {
         return actionTemplateRepository.findAllByUser(principal.getName());
     }
 
-    @PostMapping("/save")
+    @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ActionTemplate saveTemplate(@RequestBody ActionTemplate actionTemplate,
                                        Principal principal) {
@@ -39,13 +40,13 @@ public class ActionTemplateController {
                 ActionTemplate template = templateOpt.get();
                 String user = template.getUser();
 
-                if (template.getUser().equalsIgnoreCase(user)) {
-                    return actionTemplateRepository.save(getWithFixedSequences(actionTemplate));
+                if (!template.getUser().equalsIgnoreCase(principal.getName())) {
+                    throw new ActionTemplateNotOwnedException();
                 }
             }
         }
 
-        throw new ActionTemplateNotFoundException(id);
+        return actionTemplateRepository.save(getWithFixedSequences(actionTemplate));
     }
 
     private ActionTemplate getWithFixedSequences(ActionTemplate actionTemplate) {
