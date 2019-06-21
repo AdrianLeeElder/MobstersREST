@@ -33,6 +33,7 @@ public class WebDriverConfig {
         desiredCapabilities.setCapability("proxy", proxy);
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments(
+                "--headless",
                 "--disable-gpu",
                 "--ignore-certificate-errors",
                 "--disable-notifications",
