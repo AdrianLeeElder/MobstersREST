@@ -22,6 +22,11 @@ public class MobsterController {
     private MobsterRepository mobsterRepository;
     private final MobsterService mobsterService;
 
+    @GetMapping("/all")
+    public List<Mobster> getAllMobsters(Principal principal) {
+        return mobsterRepository.findAllByUser(principal.getName());
+    }
+
     @GetMapping
     public List<Mobster> getMobsters(int pageNumber, Principal principal) {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "username"));

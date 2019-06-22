@@ -38,7 +38,6 @@ public class ActionTemplateController {
 
             if (templateOpt.isPresent()) {
                 ActionTemplate template = templateOpt.get();
-                String user = template.getUser();
 
                 if (!template.getUser().equalsIgnoreCase(principal.getName())) {
                     throw new ActionTemplateNotOwnedException();
@@ -46,7 +45,18 @@ public class ActionTemplateController {
             }
         }
 
+        validateTemplate(actionTemplate);
         return actionTemplateRepository.save(getWithFixedSequences(actionTemplate));
+    }
+
+    private void validateTemplate(ActionTemplate actionTemplate) {
+        if (actionTemplate.getMobsters().isEmpty()) {
+            throw new IllegalStateException("Template must have at least one mobster");
+        } else if(actionTemplate.getActions().isEmpty()) {
+            throw new IllegalStateException("Template must have at least one action");
+        } else if (actionTemplate.getName().isEmpty()) {
+            throw new IllegalStateException("Template name cannot be empty");
+        }
     }
 
     private ActionTemplate getWithFixedSequences(ActionTemplate actionTemplate) {

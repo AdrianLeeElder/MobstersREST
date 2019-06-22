@@ -10,10 +10,10 @@ import java.util.List;
 @Service
 public class ActionJobCreatorImpl implements ActionJobCreator {
     @Override
-    public List<ActionJob> createFromTemplate(ActionTemplate actionTemplate, List<Mobster> mobsters, String user) {
+    public List<ActionJob> create(ActionTemplate actionTemplate, String user) {
         List<ActionJob> actionJobs = new ArrayList<>();
 
-        for (Mobster mobster : mobsters) {
+        for (Mobster mobster : actionTemplate.getMobsters()) {
             ActionJob actionJob = ActionJob
                     .builder()
                     .mobster(mobster)

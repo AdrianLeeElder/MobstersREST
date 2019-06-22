@@ -33,15 +33,13 @@ public class ActionJobController {
     /**
      * Create a {@link ActionJob} by the given {@link ActionTemplate}.
      *
-     * @param id           the {@link ActionTemplate} identifier.
-     * @param mobsterNames the list of mobster usernames.
-     * @param principal    the authorized user.
+     * @param id        the {@link ActionTemplate} identifier.
+     * @param principal the authorized user.
      * @return
      */
-    @GetMapping(value = "/{id}/{mobsterNames}")
+    @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public List<ActionJob> createFromTemplate(@PathVariable String id,
-                                              @PathVariable List<String> mobsterNames,
                                               Principal principal) {
         Optional<ActionTemplate> actionTemplateOpt = actionTemplateRepository.findByIdAndUser(id, principal.getName());
 
@@ -49,9 +47,7 @@ public class ActionJobController {
             throw new ActionTemplateNotFoundException(id);
         }
 
-        List<ActionJob> actionJobs = actionJobCreator.createFromTemplate(actionTemplateOpt.get(),
-                mobsterRepository.findByUsernameRegexAndUser(getRegex(mobsterNames), principal.getName()),
-                principal.getName());
+        List<ActionJob> actionJobs = actionJobCreator.create(actionTemplateOpt.get(), principal.getName());
 
         return actionJobRepository.saveAll(actionJobs);
     }
@@ -82,7 +78,7 @@ public class ActionJobController {
                         today.minusDays(1),
                         today,
                         templateName);
-        
+
         return ActionJobStatistics.builder().actionJobList(jobs).build();
     }
 }

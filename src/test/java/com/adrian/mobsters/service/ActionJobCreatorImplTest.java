@@ -56,6 +56,7 @@ public class ActionJobCreatorImplTest {
                 .user(TRACY)
                 .actions(ACTION_LIST_TEMPLATE)
                 .name("Daily Actions")
+                .mobsters(Collections.singletonList(mobster))
                 .build();
 
         assertEquals(Collections
@@ -67,6 +68,6 @@ public class ActionJobCreatorImplTest {
                                 .actionList(ACTION_LIST)
                                 .user(TRACY).mobster(mobster)
                                 .build()),
-                actionJobCreatorImpl.createFromTemplate(template, Collections.singletonList(mobster), "tracy"));
+                actionJobCreatorImpl.create(template, "tracy"));
     }
 }

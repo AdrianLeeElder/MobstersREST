@@ -105,7 +105,7 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
             proxyRepository.save(proxy);
 
             log.info("Proxy was set to in use false.");
-            chromeDriver.close();
+            chromeDriver.quit();
         }
     }
 

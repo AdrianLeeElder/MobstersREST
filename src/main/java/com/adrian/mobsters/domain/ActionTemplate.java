@@ -7,6 +7,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,4 +29,12 @@ public class ActionTemplate {
     private final String name;
     @ApiModelProperty(notes = "The user that this template belongs to.", example = "bob@yahoo.com", hidden = true)
     private final String user;
+    @ApiModelProperty(notes = "Frequency to execute this action template",
+            example = "Daily",
+            allowableValues = "Daily, Weekly, Monthly")
+    private final String frequency;
+    @ApiModelProperty(notes = "When this template was last ran.")
+    private LocalDateTime lastRan;
+    @ApiModelProperty(notes = "The mobsters to assign the action jobs to.")
+    private List<Mobster> mobsters;
 }
