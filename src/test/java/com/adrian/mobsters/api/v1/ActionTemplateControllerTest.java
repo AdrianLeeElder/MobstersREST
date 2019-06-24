@@ -2,7 +2,9 @@ package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionTemplate;
 import com.adrian.mobsters.domain.ActionTemplateAction;
+import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
+import com.adrian.mobsters.service.Frequencies;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +89,7 @@ public class ActionTemplateControllerTest {
 
     @Test
     public void saveTemplate() throws Exception {
+        List<Mobster> mobsters = Collections.singletonList(Mobster.builder().build());
         List<ActionTemplateAction> actionList =
                 Arrays.asList(ActionTemplateAction
                                 .builder()
@@ -103,6 +106,9 @@ public class ActionTemplateControllerTest {
                 .id("1")
                 .user(TRACY)
                 .actions(actionList)
+                .name("Daily")
+                .mobsters(mobsters)
+                .frequency(Frequencies.DAILY)
                 .build();
 
         when(actionTemplateRepository.findByIdAndUser("1", TRACY))
