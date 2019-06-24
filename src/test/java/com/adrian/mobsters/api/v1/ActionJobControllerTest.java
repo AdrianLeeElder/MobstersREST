@@ -78,7 +78,7 @@ public class ActionJobControllerTest {
                 .build());
         given(actionJobRepository.saveAll(anyIterable())).willReturn(expectedJobs);
 
-        mockMvc.perform(get(BASE_API + "/1/" + "bigtrac").principal(principal)
+        mockMvc.perform(get(BASE_API + "/1/").principal(principal)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isCreated())
