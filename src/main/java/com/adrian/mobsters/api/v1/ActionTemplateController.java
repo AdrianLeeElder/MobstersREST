@@ -5,6 +5,7 @@ import com.adrian.mobsters.domain.ActionTemplateAction;
 import com.adrian.mobsters.exception.ActionTemplateNotFoundException;
 import com.adrian.mobsters.exception.ActionTemplateNotOwnedException;
 import com.adrian.mobsters.repository.ActionTemplateRepository;
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -51,11 +52,13 @@ public class ActionTemplateController {
 
     private void validateTemplate(ActionTemplate actionTemplate) {
         if (actionTemplate.getMobsters().isEmpty()) {
-            throw new IllegalStateException("Template must have at least one mobster");
+            throw new IllegalStateException("Template must have at least one mobster.");
         } else if(actionTemplate.getActions().isEmpty()) {
-            throw new IllegalStateException("Template must have at least one action");
+            throw new IllegalStateException("Template must have at least one action.");
         } else if (actionTemplate.getName().isEmpty()) {
-            throw new IllegalStateException("Template name cannot be empty");
+            throw new IllegalStateException("Template name cannot be empty.");
+        } else if (Strings.isNullOrEmpty(actionTemplate.getFrequency())) {
+            throw new IllegalStateException("Template frequency cannot be empty.");
         }
     }
 
