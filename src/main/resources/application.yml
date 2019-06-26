@@ -1,17 +1,9 @@
 spring:
   profiles: prod
-  data:
-    mongodb:
-      uri: ${MONGODB_URI}
 ---
 spring:
   profiles: dev
-  data:
-    mongodb:
-      uri: ${MONGODB_URI}
-    com:
-      adrian:
-        mobsters: TRACE
+
 ---
 otka:
   oauth2:
@@ -31,3 +23,7 @@ logging:
     com:
       adrian:
         mobsters: TRACE
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
