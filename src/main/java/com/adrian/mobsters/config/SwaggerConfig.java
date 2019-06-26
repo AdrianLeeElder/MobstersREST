@@ -22,7 +22,7 @@ import java.util.List;
 public class SwaggerConfig {
     @Value("${otka.oauth2.client-id}")
     private String clientId;
-    @Value("${otka.auth.server}")
+    @Value("${otka.oauth2.issuer}")
     private String authServer;
 
     @Bean
