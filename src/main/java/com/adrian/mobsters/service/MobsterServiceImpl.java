@@ -36,14 +36,13 @@ public class MobsterServiceImpl implements MobsterService {
     }
 
     @Override
-    public List<Mobster> getMobsters(String user, Pageable pageable) {
-        Page<Mobster> mobstersPage = mobsterRepository.findAllByUser(user, pageable);
+    public Page<Mobster> getMobsters(String user, Pageable pageable, String status) {
+        List<Mobster> mobstersPage = mobsterRepository.findAllByUser(user);
+        setActionJobStatus(mobstersPage);
 
-        List<Mobster> mobstersList = mobstersPage.getContent();
+        String statuses = String.join("|", status.split(","));
 
-        setActionJobStatus(mobstersList);
-
-        return mobstersList;
+        return mobsterRepository.findAllByUserAndActionJobStatusRegex(user, pageable, statuses);
     }
 
     private void setActionJobStatus(List<Mobster> mobstersList) {

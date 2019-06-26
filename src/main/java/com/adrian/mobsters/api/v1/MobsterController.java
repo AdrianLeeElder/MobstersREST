@@ -4,7 +4,9 @@ import com.adrian.mobsters.domain.Mobster;
 import com.adrian.mobsters.exception.MobsterNotFoundException;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.adrian.mobsters.service.MobsterService;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -28,11 +30,14 @@ public class MobsterController {
     }
 
     @GetMapping
-    public List<Mobster> getMobsters(int pageNumber, Principal principal) {
+    public Page<Mobster> getMobsters(int pageNumber,
+                                     @RequestParam(defaultValue = "") String status,
+                                     Principal principal) {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "username"));
 
         return mobsterService.getMobsters(principal.getName(),
-                new PageRequest(pageNumber, RESULTS_PER_PAGE, sort));
+                new PageRequest(pageNumber, RESULTS_PER_PAGE, sort),
+                status);
     }
 
     @GetMapping("/total-pages")

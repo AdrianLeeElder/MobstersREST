@@ -2,6 +2,7 @@ package com.adrian.mobsters.api.v1;
 
 import com.adrian.mobsters.domain.ActionJob;
 import com.adrian.mobsters.domain.Mobster;
+import com.adrian.mobsters.domain.StatusConstants;
 import com.adrian.mobsters.repository.ActionJobRepository;
 import com.adrian.mobsters.repository.MobsterRepository;
 import com.adrian.mobsters.service.MobsterService;
@@ -11,12 +12,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,11 +62,39 @@ public class MobsterControllerTest {
         actionJobList = Collections.singletonList(ActionJob.builder().build());
         Mobster mobster = Mobster.builder().id("1").username("Zombie").user(TRACY).build();
         List<Mobster> mobsters = Collections.singletonList(mobster);
-        given(mobsterService.getMobsters(eq(TRACY), any(PageRequest.class))).willReturn(mobsters);
 
         mockMvc.perform(get("/api/v1/mobsters?&pageNumber=0").principal(principal)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(mobsters)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllByRunning() throws Exception {
+        actionJobList = Collections.singletonList(ActionJob.builder().build());
+        Mobster running = Mobster
+                .builder()
+                .id("1")
+                .actionJobStatus(StatusConstants.RUNNING)
+                .username("Zombie")
+                .user(TRACY)
+                .build();
+        Mobster complete = Mobster
+                .builder()
+                .id("1")
+                .actionJobStatus(StatusConstants.IDLE)
+                .username("Zombie")
+                .user(TRACY)
+                .build();
+        List<Mobster> mobsters = Arrays.asList(running, complete);
+        PageImpl<Mobster> page = new PageImpl<>(Collections.singletonList(running));
+        given(mobsterService.getMobsters(eq(TRACY), any(PageRequest.class), eq("running")))
+                .willReturn(page);
+
+        mockMvc.perform(get("/api/v1/mobsters?&pageNumber=0&status=running").principal(principal)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(page)))
                 .andExpect(status().isOk());
     }
 

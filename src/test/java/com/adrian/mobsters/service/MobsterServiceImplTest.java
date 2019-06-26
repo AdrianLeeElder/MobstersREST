@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -106,16 +107,22 @@ public class MobsterServiceImplTest {
     private void testReturnsMobsterStatus(String returnsStatus, ActionJob... actionJobs) {
         given(actionJobRepository.findByMobster_IdIn(Collections.singletonList("1")))
                 .willReturn(Arrays.asList(actionJobs));
-        given(mobsterRepository.findAllByUser(eq(TRACY), any(PageRequest.class)))
-                .willReturn(new PageImpl<>(Collections.singletonList(Mobster
-                        .builder()
-                        .id("1")
-                        .build())));
-        List<Mobster> mobsters = mobsterServiceImpl.getMobsters(TRACY, PageRequest.of(0, 10));
-
-        assertThat(mobsters, is(equalTo(Collections.singletonList(Mobster
+        Mobster mobster = Mobster
                 .builder()
                 .id("1")
-                .actionJobStatus(returnsStatus).build()))));
+                .build();
+
+        given(mobsterRepository.findAllByUser(eq(TRACY))).willReturn(Collections.singletonList(mobster));
+
+        Page<Mobster> page = new PageImpl<>(Collections.singletonList(mobster));
+
+        given(mobsterRepository.findAllByUserAndActionJobStatusRegex(eq(TRACY),
+                any(PageRequest.class),
+                eq(returnsStatus)))
+                .willReturn(page);
+
+        Page<Mobster> mobsters = mobsterServiceImpl.getMobsters(TRACY, PageRequest.of(0, 10), returnsStatus);
+
+        assertThat(mobsters, is(equalTo(page)));
     }
 }

@@ -21,4 +21,6 @@ public interface ActionJobRepository extends MongoRepository<ActionJob, String> 
                                                                     String templateName);
 
     List<ActionJob> findByMobster_IdIn(List<String> ids);
+
+    List<ActionJob> findByMobster_Id(String id);
 }
