@@ -1,1 +1,1 @@
-web: java -Dspring.profiles.active=prod -Dserver.port=$PORT -Dotka.oauth2.client-id=$CLIENT_ID -Dotka.oauth2.issuer="https://dev-210965.okta.com/oauth2/default" -jar backend/target/backend-1.0-SNAPSHOT-SNAPSHOT.jar
+web: java -Dspring.profiles.active=prod -Dserver.port=$PORT -Dotka.oauth2.client-id=$CLIENT_ID -Dotka.oauth2.issuer="https://dev-210965.okta.com/oauth2/default" -jar backend/target/backend-1.0-SNAPSHOT.jar
