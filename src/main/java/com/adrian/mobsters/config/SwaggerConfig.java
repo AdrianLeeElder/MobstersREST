@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
+@PropertySource("classpath:application.properties")
 public class SwaggerConfig {
     @Value("${okta.oauth2.client-id}")
     private String clientId;
