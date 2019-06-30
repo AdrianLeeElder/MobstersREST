@@ -1,6 +1,7 @@
 package com.adrian.mobsters.config;
 
 import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +22,16 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
-@PropertySource("classpath:application.properties")
 public class SwaggerConfig {
-    @Value("${okta.oauth2.client-id}")
-    private String clientId;
-    @Value("${otka.oauth2.issuer}")
-    private String authServer;
+    private final String clientId;
+    private final String authServer;
+
+    @Autowired
+    public SwaggerConfig(@Value("${okta.oauth2.client-id}") String clientId,
+                         @Value("${otka.oauth2.issuer}") String authServer) {
+        this.clientId = clientId;
+        this.authServer = authServer;
+    }
 
     @Bean
     public Docket api() {
