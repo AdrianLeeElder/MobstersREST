@@ -13,11 +13,6 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 @Slf4j
 public class WebDriverConfig {
-
-    static {
-        System.setProperty("webdriver.chrome.driver", System.getenv("CHROMEDRIVER_PATH"));
-    }
-
     @Autowired
     private ProxyService proxyService;
 
