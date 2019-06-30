@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
@@ -24,13 +25,10 @@ import java.util.List;
 @EnableSwagger2
 public class SwaggerConfig {
     private final String clientId;
-    private final String authServer;
 
     @Autowired
-    public SwaggerConfig(@Value("${okta.oauth2.client-id}") String clientId,
-                         @Value("${otka.oauth2.issuer}") String authServer) {
+    public SwaggerConfig(@Value("${okta.oauth2.client-id}") String clientId) {
         this.clientId = clientId;
-        this.authServer = authServer;
     }
 
     @Bean
