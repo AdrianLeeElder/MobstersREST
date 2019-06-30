@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpin
+FROM openjdk:8-jre-alpine
 
 # We need wget to set up the PPA and xvfb to have a virtual screen and unzip to install the Chromedriver
 RUN apt-get install -y wget xvfb unzip
