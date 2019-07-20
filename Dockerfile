@@ -19,4 +19,4 @@ ADD ${JAR_FILE} mobsters.jar
 # Put Chromedriver into the PATH
 ENV CHROMEDRIVER_DIR "/usr/bin/chromedriver"
 
-ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/mobsters.jar"]
+ENTRYPOINT ["java","-jar","/mobsters.jar"]
