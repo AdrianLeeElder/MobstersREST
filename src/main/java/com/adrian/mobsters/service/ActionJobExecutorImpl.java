@@ -49,7 +49,7 @@ public class ActionJobExecutorImpl implements ActionJobExecutor {
 
     private void runActionJob(ActionJob actionJob) throws ActionFailedException {
         actionJob.setRunStart(LocalDateTime.now());
-        log.debug("Executing action job {}", actionJob);
+        log.debug("Executing action job {}", actionJob.getId());
         executeActions(actionJob);
     }
 
